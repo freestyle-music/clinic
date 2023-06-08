@@ -1,0 +1,21 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+// Variables
+@import "variables";
+
+// Bootstrap
+// @import "~bootstrap/scss/bootstrap";
+// Font Awesome Icons
+@import "~admin-lte/plugins/fontawesome-free/css/all.min.css";
+// Admin-lte
+@import "~admin-lte/dist/css/adminlte.min.css";
+
+//Khmer fonts
+@import url("https://fonts.googleapis.com/css2?family=Koh+Santepheap:wght@300&display=swap");
+
+body {
+    font-family: "Koh Santepheap";
+}
+
+@import "sweetalert2/src/sweetalert2.scss";

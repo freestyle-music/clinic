@@ -60,9 +60,13 @@
                 :key="day.day"
                 class="calendar-color"
                 :class="{ outside: day.outside }"
-                style="min-height:125px; height: 58px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray"
+                style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray"
                 >
                   <div class="day"><p>{{ day.day }}</p></div>
+                  <div v-if="hasVisitDate(day)" class="mt-10">
+                    <p class="day-p">{{ hasVisitDate(day) }}</p>
+                    <p class="day-p">Patient</p>
+                  </div>
                   <div class="dflex">
                     <div v-if="hasVisitDate(day)" class="view day-btn">
                     <button>
@@ -115,8 +119,16 @@ export default {
   methods: {
     hasVisitDate(day) {
       const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
-      return this.visitDate.some(date => date !== null && new Date(date).toDateString() === selectedDate.toDateString());
+      const count = this.visitDate.reduce((acc, date) => {
+        if (date !== null && new Date(date).toDateString() === selectedDate.toDateString()) {
+          return acc + 1;
+        } else {
+          return acc;
+        }
+      }, 0);
+      return count;
     },
+
     generateCalendarData() {
       const firstDay = new Date(this.selectedYear, this.selectedMonth - 1, 1);
       const lastDay = new Date(this.selectedYear, this.selectedMonth, 0);

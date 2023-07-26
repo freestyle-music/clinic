@@ -10291,3 +10291,12 @@ input.text, input.email, input.password {
 	display: flex;
 	justify-content: center;
   }
+
+  .day-p {
+	background-color: inherit !important;
+    text-align: center;
+  }
+
+  .mt-10 {
+	margin-top: -15px;
+  }

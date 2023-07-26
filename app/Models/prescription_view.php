@@ -34,6 +34,7 @@ class prescription_view extends Model
         'rr',
         "Spo2",
         "T",
+        'type',
         'status',
         'appointment_date',
         'remark',

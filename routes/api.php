@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\{
     BrandsController,
     UserController,
@@ -26,8 +27,13 @@ use App\Http\Controllers\{
     PrescriptionsController,Poscontroller,
     CloseShiftController,employeecontroller,pateintcontroller,testserviceController,
     ServiceTestController,
-    User_viewController,BeginingStockController
+    User_viewController,BeginingStockController,
+    CalendarController
 };
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
 
 /*php
 |--------------------------------------------------------------------------
@@ -40,9 +46,9 @@ use App\Http\Controllers\{
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::get('/user', function (Request $request) {
     return $request->user();
-});
+})->middleware('auth:api');
 
 //test api
 
@@ -311,5 +317,9 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/beginingstock/updatelist', [BeginingStockController::class, 'update_list']);
     Route::get('/beginingstocks/delete', [BeginingStockController::class, 'delete']);
     Route::get('/beginingstock/deletelist', [BeginingStockController::class, 'delete_list']);
+    
+
+    //calender
+    Route::get('/calendar', [CalendarController::class, 'index']);
     
 });

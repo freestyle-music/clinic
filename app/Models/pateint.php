@@ -34,4 +34,10 @@ class pateint extends Model
         'created_by',
         'updated_by'
     ];
+
+    public function calendar() {
+        $result = pateint::all();
+        $value = $result->find(1);
+        return view('calendar', compact('result', 'value'));
+    }
 }

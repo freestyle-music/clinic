@@ -35,8 +35,10 @@
         "file-saver": "^2.0.5",
         "font-awesome": "^4.7.0",
         "laravel-vue-pagination": "^3.0.0",
+        "moment": "^2.29.4",
         "msexcel-builder": "^0.0.2",
         "read-excel-file": "^5.5.3",
+        "sweetalert2": "^11.7.12",
         "vform": "^2.1.2",
         "vue-html-to-paper": "^1.4.4",
         "vue-router": "^4.0.12",
@@ -44,6 +46,7 @@
         "vue-sweetalert2": "^5.0.5",
         "vue-table-to-excel": "^1.0.6",
         "vue2-filters": "^0.14.0",
+        "vue3-print-nb": "^0.1.4",
         "xlsx": "^0.18.5"
     }
 }

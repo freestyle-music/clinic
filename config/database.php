@@ -46,7 +46,7 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '45.76.150.128'),
+            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'clinicdb'),
             'username' => env('DB_USERNAME', 'lsky'),
@@ -91,6 +91,20 @@ return [
             'prefix_indexes' => true,
         ],
 
+        'navicat' => [
+            'driver' => 'navicat',
+            'host' => env('DB_HOST', '45.76.150.128'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'db'),
+            'username' => env('DB_USERNAME', 'lsky'),
+            'password' => env('DB_PASSWORD', '8466jack'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
     ],
 
     /*

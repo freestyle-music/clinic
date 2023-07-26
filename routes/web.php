@@ -20,7 +20,8 @@ use App\Http\Controllers\{
     StockTransactionContraller,
     SuppliyerController,
     CurencyController,
-    ExchangeRateController
+    ExchangeRateController,
+    CalendarController,
 };
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -60,3 +61,4 @@ Route::get('{any}', function () {
 // Route::resource('suppliyer',SuppliyerController::class);
 // Route::resource('curency',CurencyController::class);
 // Route::resource('exchangerate',ExchangeRateController::class);
+// Route::resource('calendar',CalendarController::class);

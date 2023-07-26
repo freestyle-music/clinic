@@ -46,7 +46,6 @@
               <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdropss"
                 tabindex="10028"><i class="fas fa-edit"></i> Release</a>
             </li>
-
           </ul>
 
           <h2 class="search-box-title">

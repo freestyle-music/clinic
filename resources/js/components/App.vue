@@ -82,6 +82,18 @@
               </dd>
             </dl>
           </li>
+          <li>
+            <dl>
+              <dt>
+                <router-link to="/calendar">
+                  <img alt="タックシール印刷" height="168" src="img/tuck_seal.png" width="168">
+                </router-link>
+              </dt>
+              <dd>
+                <span>Calendar</span>
+              </dd>
+            </dl>
+          </li>
         </ul>
       </div>
     </div>
@@ -91,8 +103,9 @@
 import Auth from '../auth/Auth.js';
 import Header from "../components/Header.vue";
 import Logo from "../components/logo.vue";
+import Calendar from "../components/Calendar/calendar.vue";
 export default {
-  components: { Header, Logo },
+  components: { Header, Logo, Calendar },
   data() {
     return {
       Menu: window.Menu,
@@ -109,6 +122,7 @@ export default {
       Laboratory: true,
       Company: true,
       pos: true,
+      calendar: true,
     }
   },
   mounted() {
@@ -121,6 +135,7 @@ export default {
         this.Laboratory = true;
         this.Company = true;
         this.pos = true;
+        this.calendar = true;
       } else if (this.loggedUser.role.trim() == 'Doctor') {
         this.Products = true;
         this.Pharmacy = true;
@@ -133,7 +148,6 @@ export default {
         this.Laboratory = true;
         this.Company = false;
         this.pos = false;
-
       } else {
         this.Products = false;
         this.Pharmacy = false;

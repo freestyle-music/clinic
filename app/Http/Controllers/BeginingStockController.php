@@ -78,8 +78,8 @@ class BeginingStockController extends Controller
     {
          if($request['created_by'] != "" && $request['document_no'] != ""){
         $product = startstock_list::create([
-            'document_no'  =>$request['document_no'],
-            'created_by'  => $request['created_by'],
+          'document_no'  =>$request['document_no'],
+          'created_by'  => $request['created_by'],
         ]);
         if( $product){
             return startstock_list::where('document_no', '=', $request->document_no)->orderBy('id', 'desc')->get();
@@ -118,27 +118,27 @@ class BeginingStockController extends Controller
     {
     if($request['updated_by'] != "" && $request['document_no'] != ""){
          $beginingstock = startstock_list::find($request->id)->first();
-             $beginingstock->update([
-            'document_type' => $request ->document_type,
-            'description'=> $request ->description,
-            'product_no'=> $request ->document_no,
-            'issu_date'=> $request ->issu_date,
-            'exprit_date'=> $request ->exprit_date,
-            'unit_of_measure_code'=> $request ->unit_of_measure_code,
-            'unit_price'=> $request ->unit_price,
-            'inventory'=> $request ->inventory,
-            'total_amount'=> $request ->total_amount,
-            'curency_code'=> $request ->curency_code,
-            'remark'=> $request ->remark,
-            'updated_by'=> $request ->updated_by,
-        ]);
+            $beginingstock->update([
+              'document_type' => $request ->document_type,
+              'description'=> $request ->description,
+              'product_no'=> $request ->document_no,
+              'issu_date'=> $request ->issu_date,
+              'exprit_date'=> $request ->exprit_date,
+              'unit_of_measure_code'=> $request ->unit_of_measure_code,
+              'unit_price'=> $request ->unit_price,
+              'inventory'=> $request ->inventory,
+              'total_amount'=> $request ->total_amount,
+              'curency_code'=> $request ->curency_code,
+              'remark'=> $request ->remark,
+              'updated_by'=> $request ->updated_by,
+            ]);
           if($beginingstock){
-             return $beginingstock;
+            return $beginingstock;
           }else{
-               return ['statue' => "Reqest update date fail."];
+            return ['statue' => "Reqest update date fail."];
           }
     }else {
-         return ['statue' => "Reqest update date fail."];
+      return ['statue' => "Reqest update date fail."];
     }
     }
     public function delete(Request $request)

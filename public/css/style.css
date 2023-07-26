@@ -622,7 +622,7 @@ html {
 	text-align: left;
 }
 
-@charset "utf-8";
+/* @charset "utf-8"; */
 
 /*--------------------------------------------------------------
  * Style info: 基本レイアウト
@@ -915,7 +915,7 @@ body {
 .clearfix {
 	clear: both;
 	/*IE6-7*/
-	/zoom: 1;
+	zoom: 1;
 }
 
 .schedule-box:after,
@@ -931,7 +931,7 @@ body {
 	clear: both;
 }
 
-@charset "utf-8";
+/* @charset "utf-8"; */
 
 /*-----------------------------------------------------------------------------------------------------
  * Style info: 固有スタイル
@@ -3039,7 +3039,7 @@ h5 {
 	height: 100%;
 }
 
-@charset "utf-8";
+/* @charset "utf-8"; */
 
 /*-----------------------------------------------------------------------------------------------------
  * Style info: 共通
@@ -4557,7 +4557,7 @@ a {
 	-moz-opacity: 0;
 	-webkit-opacity: 0;
 	opacity: 0;
-	filter: alpha(opacity:0);
+	filter: alpha(opacity 0);
 }
 
 .pagination .page:hover {
@@ -5007,7 +5007,7 @@ div.progress .count {
 	height: 100%;
 }
 
-@charset "utf-8";
+/* @charset "utf-8"; */
 
 /*---------------------------------------------------------------------------------------------------------
  * Style info: 固有スタイル（コンテンツ単位）
@@ -5657,7 +5657,7 @@ tbody td.tokkijiko_ari {
 /*曜日セル*/
 .tbl_calendar thead th {
 	background: #4397AB;
-	font-size: 14px%;
+	font-size: 14px;
 	color: #fff;
 }
 
@@ -5732,7 +5732,8 @@ tbody td.tokkijiko_ari {
 .tbl_calendar .open .schedule {
 	position: relative;
 	margin: -34px 0 0;
-	padding: 0 0 0 28px;/zoom: 1;
+	padding: 0 0 0 28px;
+	zoom: 1;
 }
 
 .tbl_calendar .open .schedule ul li {
@@ -6657,7 +6658,7 @@ div#floating-menu {
 	white-space: pre-wrap;
 }
 
-@charset "utf-8";
+/* @charset "utf-8"; */
 
 /*---------------------------------------------------------------------------------------------------------
  * Style info: 検査入力
@@ -7794,7 +7795,7 @@ Not advised to edit stuff below this line
 	display: inline-block;
 	vertical-align: middle;
 	zoom: 1;
-	*display: inline;
+	display: inline;
 }
 
 .selector select:focus,
@@ -8196,7 +8197,7 @@ div.uploader input {
 	-moz-opacity: 0;
 	-webkit-opacity: 0;
 	opacity: 0;
-	filter: alpha(opacity:0);
+	filter: alpha(opacity 0);
 
 	/*opacity:1 !important;
 	filter: alpha(opacity:100) !important;*/
@@ -8494,7 +8495,7 @@ div.button.type_blue span {
 .clearfix {
 	clear: both;
 	/*IE6-7*/
-	/zoom: 1;
+	zoom: 1;
 }
 
 .ms2side__select:after,
@@ -8504,7 +8505,7 @@ div.button.type_blue span {
 	clear: both;
 }
 
-@charset "UTF-8";
+/* @charset "UTF-8"; */
 
 /*---------------------------------------------------------------------------------------------------------
  * Style info: 問診入力
@@ -8862,7 +8863,7 @@ div.button.type_blue span {
 .g_BodyFixed {
 	/* Base body fixed container if fixedCols > 0 */
 	position: absolute;
-	*position: static;
+	/* *position: static; */
 	z-index: 1;
 	top: 0px;
 	left: 0px;
@@ -8871,11 +8872,11 @@ div.button.type_blue span {
 
 .g_BodyFixed2 {
 	/* Inner base body fixed container if fixedCols > 0. Used for IE7 support */
-	*position: absolute;
+	/* *position: absolute;
 	*z-index: 1;
 	*top: 0px;
 	*left: 0px;
-	*overflow: hidden;
+	*overflow: hidden; */
 }
 
 .g_FootFixed {
@@ -8890,7 +8891,7 @@ div.button.type_blue span {
 .g_Cl {
 	/* Grid column container */
 	display: inline-block;
-	*display: inline;
+	/* *display: inline; */
 	zoom: 1;
 	vertical-align: top;
 	overflow: hidden;
@@ -8946,7 +8947,7 @@ div.button.type_blue span {
 .g_SH {
 	/* Label container for checkbox / radio selection element */
 	display: inline-block;
-	*display: inline;
+	/* *display: inline; */
 	zoom: 1;
 	width: 15px;
 }
@@ -10148,3 +10149,145 @@ input.text, input.email, input.password {
 .test-table-tr{
 	height: 25px;
 }
+
+/*---------------------------------------------------------------------------------------------------------
+ * calender 
+---------------------------------------------------------------------------------------------------------*/
+/* .calendar-box-title {
+	
+} */
+
+.calendar-header {
+	display: flex;
+	justify-content: space-between;
+}
+
+.calendar-header_btn {
+	display: flex;
+}
+
+.calendar-weekly {
+	/* display: flex;
+	justify-content: space-around; */
+	background-color: #4397AB;
+	color: #fff;
+  }
+ 
+  .calendar-grid {
+	/* カレンダーのグリッド部分のスタイル */
+	/* display: grid;
+	grid-template-columns: repeat(7, 1fr); */
+	background-color: #4397AB;
+	/* padding: 10px 10px 0; */
+  }
+
+  .br-table th, td {
+    background-color: #fff;
+  }
+
+  .day p {
+	display: inline;
+    padding: 4px;
+    background-color: #4397AB;
+    color: #fff;
+  }
+
+  .calendar-youbi {
+	font-weight: 700;
+	font-size: 20px;
+	flex: 1 1 0%;
+    padding: 5px 0px;
+    border-right: 1px solid gray;
+	text-align: center;
+  }
+
+  .calendar-youbi:nth-child(7n),
+  .calendar-color:nth-child(7n) p {
+	background-color: #668eff;
+  }
+
+  .calendar-youbi:nth-child(1),
+  .calendar-color:nth-child(1) p {
+	background-color: red;
+  }
+
+  .outside {
+	background-color: #c3c3c3;
+  }
+
+  .calendar-day {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 5px;
+  }
+  
+  .holiday {
+	text-align: center;
+	margin: -5px 0 5px;
+  }
+
+  .day-btn button {
+	background-color: #f9a347;
+	border: none;
+	border-radius: 2px;
+  }
+
+  .day-btn button:hover {
+	opacity: 0.8;
+  }
+
+  .day-btn a {
+	color: #fff !important;
+  }
+
+  .view {
+	margin-right: 2px;
+	margin-left: 15px;
+  }
+
+  .details {
+	margin-left: 2px;
+  }
+
+  .calendar-search {
+	display: flex;
+	height: 28px;
+	margin-left: 10px;
+  }
+
+  .calendar-search input {
+	text-align: right;
+	height: 20px;
+	margin-top: 5px;
+  }
+
+  .calendar-btn {
+	height: 28px;
+	margin: 0 10px;
+	border: #22adb763 1px solid;
+    box-shadow: 1px 1px black;
+    color: #ede1c2 !important;
+  }
+
+  .calendar-title,
+  .calendar-p {
+	color: #ede1c2 !important;
+	font-size: inherit;
+    line-height: 30px;
+	margin: 0;
+  }
+
+  .calendar-p {
+	margin: 0 10px;
+  }
+
+
+  .search-btn {
+	margin: 0;
+	padding: 0 10px;
+  }
+
+  .dflex {
+	display: flex;
+	justify-content: center;
+  }

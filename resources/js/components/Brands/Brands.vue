@@ -174,13 +174,12 @@ import { ref, reactive, watch, computed, onMounted } from "vue";
 import useBrand from "../../componentJS/Brand";
 import pagination from "laravel-vue-pagination";
 import Header from "../Header.vue";
-import Logo from "../logo.vue"
+import Logo from "../logo.vue";
 import Footer from "../footer.vue";
 import MenuBrand from "./Menu_Brand.vue";
 import Auth from "../../auth/Auth";
-const { errors,form, items, search, getBrand, deleteBrand, saveBrand, updateBrand } =
-  useBrand();
-  const is_back = ref(false)
+const { errors,form, items, search, getBrand, deleteBrand, saveBrand, updateBrand } = useBrand();
+const is_back = ref(false)
 const save_update = ref('Save')
 const delete_search = ref('Search') 
 const disabled = ref(true);

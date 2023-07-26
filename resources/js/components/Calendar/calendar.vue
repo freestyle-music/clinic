@@ -69,15 +69,15 @@
                   </div>
                   <div class="dflex">
                     <div v-if="hasVisitDate(day)" class="view day-btn">
-                    <button>
-                      <a href="" @click="calendarView">View</a>
-                    </button>
-                    </div>
-                    <div v-if="hasVisitDate(day)" class="details day-btn">
-                      <button>
-                        <a href="">Details</a>
-                      </button>
-                    </div>
+  <button @click="showViewModal">
+    <a href="#">View</a>
+  </button>
+</div>
+<div v-if="hasVisitDate(day)" class="details day-btn">
+  <button @click="showDetailsModal">
+    <a href="#">Details</a>
+  </button>
+</div>
                     <div v-else class="holiday">
                       holiday
                     </div>
@@ -89,7 +89,47 @@
         </div>
       </div>
     </div>
+    <!-- モーダル -->
+    <div class="modal" v-if="isModalVisible" id="staticboomId" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticboomId" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="ui-widget-header">
+          <h5 class="modal-title in-header" id="staticBackdropLabel"><i class="fa fa-plus" aria-hidden="true"></i>
+            Detailed Information</h5>
+            <span class="ui-icon ui-icon-closethick" data-bs-dismiss="modal" aria-label="Close"></span>
+            <div class="modal fade ui-modal" id="delete-form" data-bs-backdrop="static" data-bs-keyboard="false"
+                  tabindex="-1" aria-labelledby="clearconfirm" aria-hidden="true">
+                  <div class="modal-dialog smallpopup" id="nonbackgroundboom">
+                    <div class="modal-content ui-dialog">
+                      <div class="ui-widget-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                          <span class="ui-dialog-title" id="ui-dialog-title-modal-edit-dialog">Confirm Message</span>
+                        </h5>
+                        <span class="ui-icon ui-icon-closethick btn-cancel" data-bs-dismiss="modal"
+                          aria-label="Close"></span>
+                      </div>
+                      <div class="ui-dialog-content" style="background-color: #fff;">
+                        <div class="modal-body">Do you want to deleted ?</div>
+                        <div class="modal-footer">
+                          <div class="button type2" id="uniform-undefined" data-bs-dismiss="modal" @click="cancel()">
+                            <span>No<input type="button" class="type2" tabindex="10008" value="No"
+                              style="width: 89px; opacity: 0;">
+                            </span>
+                          </div>
+                          <div class="button type2" data-bs-dismiss="modal" @click="btnDelete()"><span>Yes</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
   </div>
+
+
   <Footer />
 </template>
 
@@ -114,9 +154,35 @@ export default {
       displayedYear: "",
       weekDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       calendarData: [],
+      isModalVisible: false, // モーダルの表示状態を管理するプロパティ
     };
   },
   methods: {
+    // Viewボタンがクリックされたときにモーダルを表示する関数
+    showViewModal() {
+      // 何らかのデータをモーダルにセットする場合はここで行う
+      // 例: this.selectedEmployee = employee;
+
+      // モーダルの表示状態をtrueにセット
+      this.isModalVisible = true;
+    },
+
+    // Detailsボタンがクリックされたときにモーダルを表示する関数
+    showDetailsModal() {
+      // 何らかのデータをモーダルにセットする場合はここで行う
+      // 例: this.selectedEmployee = employee;
+
+      // モーダルの表示状態をtrueにセット
+      this.isModalVisible = true;
+    },
+
+    // モーダルを閉じる関数
+    closeModal() {
+      // モーダルの表示状態をfalseにセット
+      this.isModalVisible = false;
+    },
+
+
     hasVisitDate(day) {
       const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
       const count = this.visitDate.reduce((acc, date) => {

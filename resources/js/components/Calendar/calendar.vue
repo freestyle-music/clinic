@@ -92,39 +92,6 @@
       </div>
     </div>
   </div>
-
-  <div v-if="showModal" class="modal">
-    <div class="modal-content">
-      <span class="close" @click="closeModal">&times;</span>
-      <!-- データベースから取得した情報を表示するコンテンツをここに記述 -->
-      <div class="my-2 justify-content-center">
-        <table id="pr-tb">
-          <!-- テーブルのヘッダー -->
-          <thead>
-            <tr class="p-bg" style="text-align:center !important;">
-              <th class="text-center  header-cell">Patient</th>
-              <th class="text-center  header-cell">Sex</th>
-              <th class="text-center  header-cell">Age</th>
-              <th class="text-center  header-cell">Date of Birth</th>
-              <th class="text-center  header-cell">Phone Number</th>
-              <th class="text-center  header-cell">Description</th>
-            </tr>
-          </thead>
-          <!-- テーブルのボディ -->
-          <tbody>
-            <!-- <tr v-for="data in datas">
-              <td>{{ data.pateinid }}</td>
-              <td>{{ data.sex }}</td>
-              <td>{{ data.age }}</td>
-              <td>{{ data.birstdate }}</td>
-              <td>{{ data.phone1 }}</td>
-              <td>{{ data.district }}</td>
-            </tr> -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
   <Footer />
 </template>
 

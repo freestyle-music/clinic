@@ -46,7 +46,7 @@
               </dd>
             </dl>
           </li>
-          <li v-if="Laboratory">
+          <li>
             <dl>
               <dt>
                 <router-link to="/laboratory">

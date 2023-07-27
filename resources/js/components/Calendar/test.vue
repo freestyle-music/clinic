@@ -66,7 +66,8 @@
           <!-- カレンダーのテンプレート内 -->
           <tbody>
             <tr v-for="week in calendar" :key="week">
-              <td v-for="day in week" :key="day.date" :class="['calendar-day', { 'today': isToday(day), 'sunday': day.date === 0 }]">
+              <td v-for="day in week" :key="day.date"
+                :class="['calendar-day', { 'today': isToday(day), 'sunday': day.date === 0 }]">
                 <div class="day-number">
                   <div class="day">{{ day.date }}</div>
                   <div class="center-buttons">
@@ -98,12 +99,12 @@
             <!-- テーブルのヘッダー -->
             <thead>
               <tr class="p-bg" style="text-align:center !important;">
-                <th class="text-center">Patient</th>
-                <th class="text-center">Sex</th>
-                <th class="text-center">Age</th>
-                <th class="text-center">Date of Birth</th>
-                <th class="text-center">PhoneNumber</th>
-                <th class="text-center">Description</th>
+                <th class="text-center  header-cell">Patient</th>
+                <th class="text-center  header-cell">Sex</th>
+                <th class="text-center  header-cell">Age</th>
+                <th class="text-center  header-cell">Date of Birth</th>
+                <th class="text-center  header-cell">Phone Number</th>
+                <th class="text-center  header-cell">Description</th>
               </tr>
             </thead>
             <!-- テーブルのボディ -->
@@ -282,7 +283,7 @@ export default {
 
     fetchPrescriptions() {
       axios
-      .get("api/v1/prescription/index/")
+        .get("api/v1/prescription/index/")
         .then(response => {
           this.prescriptions = response.data.prescriptions;
           this.setCalendarData();
@@ -532,7 +533,8 @@ td:nth-child(7n+1) .day-number .day {
   left: 0;
   width: 100%;
   height: 80%;
-  background-color: rgba(0, 0, 0, 0.7); /* 半透明の背景色 */
+  background-color: rgba(0, 0, 0, 0.7);
+  /* 半透明の背景色 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -544,6 +546,14 @@ td:nth-child(7n+1) .day-number .day {
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
+
+.header-cell {
+  background-color: #4397AB !important;
+  /* ヘッダーの背景色を変更 */
+  color: #fff;
+  /* ヘッダーのテキスト色を白に設定 */
+}
+
 .close {
   position: absolute;
   top: 0;
@@ -552,11 +562,7 @@ td:nth-child(7n+1) .day-number .day {
   font-size: 20px;
   cursor: pointer;
 }
-.holiday {
-  color: #000000;
-}
 
-.appointments-count,
 .holiday {
   position: absolute;
   top: 50%;
@@ -564,5 +570,5 @@ td:nth-child(7n+1) .day-number .day {
   transform: translate(-50%, -50%);
   font-size: 14px;
   font-weight: bold;
-}
-</style>
+  color: #000000;
+}</style>

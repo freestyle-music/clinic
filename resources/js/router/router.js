@@ -46,6 +46,7 @@ import BeginningStock from "../components/StockBeginnig/BeginningStock.vue"
 import StockOnHand from "../components/StockOnHand/StockOnHand.vue"
 import createbeginingstock from "../components/StockBeginnig/CreateBeginningStock.vue";
 import calendar from "../components/Calendar/calendar";
+import calendarView from "../components/Calendar/calendarView.vue";
 const routes = [
     { path: "/dashboard", component: App, name: "App" },
     { path: "/brands", component: Brands },
@@ -113,6 +114,8 @@ const routes = [
     {path: '/stockonhand', component: StockOnHand, name : 'stockonhand'},
     {path: "/creatbeginnigstock", component: createbeginingstock, name: 'createbeginnigstock'},
     {path: "/calendar", component: calendar, name: 'calendar'},
+    {path: "/calendarView", component: calendarView, name: 'calendarView'},
+    {path: "/calendarView/:dayDate", component: calendarView, name: 'calendarView'},
     
 ];
 export default createRouter({

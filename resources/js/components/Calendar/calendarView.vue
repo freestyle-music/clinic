@@ -1,189 +1,205 @@
 <template>
-    <div class="wrapper">
-        <div class="container-fuild">
-            <div id="headTitle">
-                <div id="logo">
-                    <img alt="Healthbook" height="44" src="img/logo.png" width="70" mstalt="155922" _msthash="1" />
-                </div>
-                <h1 id="title" _msttexthash="48503" _msthash="2">
-                    calender
-                </h1>
-            </div>
+  <div class="wrapper">
+    <div class="container-fuild">
+      <div id="headTitle">
+        <div id="logo">
+          <img alt="Healthbook" height="44" src="img/logo.png" width="70" />
         </div>
-        <div class="container-fuild">
-            <Header />
-            <ol id="topicPath">
-                <li style="margin-left: 300px">
-                    <router-link to="">
-                        <a href="dashbaord">
-                            <font style="vertical-align: inherit"></font>
-                            <font style="vertical-align: inherit">
-                                calender
-                            </font>
-                        </a>
-                    </router-link>
-                </li>
-            </ol>
-        </div>
-
-
-        <div class="p-3">
-            <div class="calendar-box">
-                <div class="calendar-box-title search-box-title">
-                    <div class="calendar-header">
-                        <h2>As of {{ getMonthName(currentDate) }} {{ getYearName(currentDate) }}</h2>
-                        <div class="calendar-header_btn">
-                            <button @click="prevYear">&lt;&lt;</button>
-                            <button @click="prevMonth">&lt;</button>
-                            <button class="btn-radius btn btn-sm" @click="thisMonth" style="color: #f8f5b4; margin-top: -2px">this</button>
-                            <button @click="nextMonth">&gt;</button>
-                            <button @click="nextYear">&gt;&gt;</button>
-                        </div>
-                    </div>
-                </div>
-               
-                <input id="search" name="search" type="hidden" value="1">
-
-                <div class="calendar-box-content">
-
-                <div class="calendar-grid">
-                    <div class="calendar-weekly">
-                        <div class="calendar-youbi" v-for="n in 7" :key="n">{{ youbi(n-1) }}</div>
-                    </div>
-                </div>
-                    <!-- <div class="calendar-grid">
-                        <div>日</div>
-                        <div>月</div>
-                        <div>火</div>
-                        <div>水</div>
-                        <div>木</div>
-                        <div>金</div>
-                        <div>土</div>
-                    </div> -->
-                    <div class="calendar-warp">
-                        <div v-for="(week, index) in calendars" :key="index" class="v-calendar-weekly__week" style="display:flex;border-left:1px solid gray;border-top:1px solid gray">
-                            <div class="calendar-daily" :class="[{outside: currentMonth !== day.month}, getCellClasses(day)]" v-for="(day, index) in week" :key="index" style="flex:1;min-height:125px; padding: 10px 0 0 10px; border-right:1px solid gray; border-bottom:1px solid gray">
-                                <div class="day"><p>{{ day.day }}</p></div> 
-                                <div class="calendar-day">
-                                    <div class="holiday">holiday</div>
-                                    <div class="view day-btn"><button><a href="./calendarView.vue">View</a></button></div>
-                                    <div class="details day-btn"><button><a href="">Details</a></button></div>
-                                </div>
-                            </div>
-                        </div>    
-                    </div>
-                </div>
-            </div> 
-        </div>
-        
+        <h1 id="title">
+          calender
+        </h1>
+      </div>
     </div>
-
+    <div class="container-fuild">
+      <Header />
+      <ol id="topicPath">
+        <li style="margin-left: 300px">
+          <router-link to="">
+            <a href="dashbaord">
+              <font style="vertical-align: inherit"></font>
+              <font style="vertical-align: inherit">
+                calenderView
+              </font>
+            </a>
+          </router-link>
+        </li>
+      </ol>
+    </div>
+    <div class="p-3">
+      <div class="calendar-box">
+        <div class="search-box">
+          <div class="search-box_inner">
+            <div class="search-box">
+              <div class="search-box-title">Search</div>
+              <div class="box">
+                <div class="box-content">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Consultation</th>
+                        <td>{{ selectedDate }}{{ getMonthName(displayedMonth) }} {{ displayedYear }}</td>
+                        <td class="day-btn"><button><a href="#">Change Date</a></button></td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th>Male</th>
+                        <td>{{ maleCount }}<br>people</td>
+                        <th>Female</th>
+                        <td>{{ femaleCount }}people</td>
+                        <th>child</th>
+                        <td>{{ childCount }}people</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="search-box-footer">
+                    <div class="day-btn">
+                      <button>
+                        <router-link to="/calendar"><a href="#">Back</a></router-link>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <Footer />
 </template>
 
 <script>
-import moment from "moment";
-import pagination from "laravel-vue-pagination";
+import axios from "axios";
 import Header from "../Header.vue";
+import moment from 'moment';
+import Footer from "../footer.vue";
+
 export default {
-    data() {
-        return {
-            currentDate: moment(),
-            currentMonth: this.getCurrentMonth(),
-            components: { Header, pagination },
-            directives: { print },
+  data() {
+    return {
+      datas: [],
+      visitDate: [],
+      resultFind: [],
+      day: [],
+      currentDate: new Date(),
+      selectedYear: null,
+      selectedMonth: null,
+      years: [],
+      months: [],
+      displayedMonth: "",
+      displayedYear: "",
+      weekDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      calendarData: [],
+      showModal: false,
+      modalData: null,
+      selectedDate: null,
+      visitDateData: [],
+      maleCount: 0,
+      femaleCount: 0,
+      childCount: 0,
+    };
+  },
+  created() {
+    // dayDateを使ってデータを取得・表示する処理を行う
+    const dayDate = this.$route.params.dayDate;
+    this.selectedDate = dayDate;
+    this.filterData();
+  },
+  methods: {
+    async filterData() {
+      // Vue Router のパラメータから日付情報を取得
+      const dayDate = this.$route.params.dayDate;
+
+      // 選択された日付を表示
+      this.selectedDate = dayDate;
+
+      try {
+        // 日付が一致するデータをサーバーから取得
+        const response = await axios.get('/api/v1/calendar', {
+          params: {
+            visitDate: dayDate
+          }
+        });
+        this.visitDateData = response.data.datas;
+
+        // フィルタリングしたデータを元にカウントを行う
+        const maleCount = this.visitDateData.filter(data => data.sex === "Male").length;
+        const femaleCount = this.visitDateData.filter(data => data.sex === "Female").length;
+        const childCount = this.visitDateData.filter(data => data.age < 13).length;
+
+        // カウントした結果を data にセット
+        this.maleCount = maleCount;
+        this.femaleCount = femaleCount;
+        this.childCount = childCount;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    showView(day) {
+        this.modalData = {
+          title: "Details for " + day.date,
+          description: "This is the description for " + day.date
         };
-    },
-    methods: {
-        changeColor: function () {
-        setTimeout(() => {
-            const dayList = Array.from(this.$refs.calendar.$vnode.elm.getElementsByClassName('v-calendar-weekly__week'))
-            dayList.map(el => {
-            el.children[0].classList.add('sunday')
-            el.children[6].classList.add('saturday')
-            })
-        }, 0)
-        },
-        getCurrentMonth() {
-            return new Date().getMonth() + 1;
-        },
-        getStartDate() {
-            let date = moment(this.currentDate);
-            date.startOf("month");
-            const youbiNum = date.day();
-            return date.subtract(youbiNum, "days");
-        },
-        getEndDate() {
-            let date = moment(this.currentDate);
-            date.endOf("month");
-            const youbiNum = date.day();
-            return date.add(6 - youbiNum, "days");
-        },
-        getMonthData() {
-            const currentDate = new Date();
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth() + 1;
-            console.log(month); // 現在の月を表示
-        },
-        thisMonth() {
-            this.currentDate = moment().startOf("month");
-        },
-        nextMonth() {
-            this.currentDate = moment(this.currentDate).add(1, "month");
-        },
-        prevMonth() {
-            this.currentDate = moment(this.currentDate).subtract(1, "month");
-        },
+        this.showModal = true;
+      },
+      closeModal() {
+        this.showModal = false;
+        this.modalData = null;
+      },
 
-        youbi(dayIndex) {
-            const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            return week[dayIndex];
-        },
-        getCalendar() {
-            let startDate = this.getStartDate();
-            const endDate = this.getEndDate();
-            const weekNumber = Math.ceil(endDate.diff(startDate, "days") / 7);
-            let calendars = [];
-            let calendarDate = this.getStartDate();
+    hasVisitDate(day) {
+      const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
+      const count = this.visitDate.reduce((acc, date) => {
+        if (date !== null && new Date(date).toDateString() === selectedDate.toDateString()) {
+          return acc + 1;
+        } else {
+          return acc;
+        }
+      }, 0);
+      return count;
+    },
+    getMonthName(month) {
+      return moment().month(month - 1).format('MMMM');
+    },
+    fetchPatients() {
+      axios.get('/api/v1/calendar')
+      .then(response => {
+        this.datas = response.data.datas;
+        this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
+        this.resultFind = response.data.resultFind;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    },
+    getMonthName(month) {
+      return moment().month(month - 1).format('MMMM');
+    },
+  },
+  mounted() {
+    // axios.get("/api/calendar").then((response) => (this.datas = response.data));
+    this.fetchPatients(); // ページが読み込まれた際にデータを取得
+    const currentYear = this.currentDate.getFullYear();
+    const currentMonth = this.currentDate.getMonth() + 1;
+    this.selectedYear = currentYear;
+    this.selectedMonth = currentMonth;
+    this.displayedMonth = currentMonth;
+    this.displayedYear = currentYear.toString();
+    this.selectedDate = this.$route.params.date;
+    this.filterData();
 
-            for (let week = 0; week < weekNumber; week++) {
-                let weekRow = [];
-                for (let day = 0; day < 7; day++) {
-                    weekRow.push({
-                        day: calendarDate.get('date'),
-                        month: calendarDate.format('YYYY-MM'),
-                    });
-                    calendarDate.add(1, "days");
-                }
-                calendars.push(weekRow);
-            }
-            return calendars;
-        },
-    },
-    computed: {
-        calendars() {
-            return this.getCalendar();
-        },
-        currentMonth(){
-            return this.currentDate.format('YYYY-MM');
-        },
-    },
-    mounted() {
-        const startDate = this.getStartDate();
-        const endDate = this.getEndDate();
-        const weekNumber = Math.ceil(endDate.diff(startDate, "days") / 7);
-        console.log(weekNumber); //5と表示される
-        console.log(this.getStartDate());
-        console.log(this.getEndDate());
-        console.log(this.getCalendar());
-        // const currentDate = new Date();
-        // const currentMonth = currentDate.getMonth() + 1; // 月は0から始まるため、+1を追加
-        // console.log(currentMonth); // 現在の月を表示
+
+    for (let year = 2000; year <= 2030; year++) {
+      this.years.push(year);
     }
-    // components: {Header, pagination, calender},
-    // directives: { print },
-    ,
-    components: { Header }
-}
 
+    for (let month = 1; month <= 12; month++) {
+      this.months.push(month);
+    }
+  },
+
+  components: { Header, Footer },
+};
 </script>
-

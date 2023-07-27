@@ -89,38 +89,39 @@
           </table>
         </div>
         <div v-if="showModal" class="modal">
-        <div class="modal-content">
-          <span class="close" @click="closeModal">&times;</span>
-          <!-- データベースから取得した情報を表示するコンテンツをここに記述 -->
-          <div class="my-2 justify-content-center">
-            <p>Details for {{ modalData.day }}</p>
-            <table id="pr-tb">
-              <!-- テーブルのヘッダー -->
-              <thead>
-                <tr class="p-bg" style="text-align:center !important;">
-                  <th class="text-center  header-cell">Patient</th>
-                  <th class="text-center  header-cell">Sex</th>
-                  <th class="text-center  header-cell">Age</th>
-                  <th class="text-center  header-cell">Date of Birth</th>
-                  <th class="text-center  header-cell">Phone Number</th>
-                  <th class="text-center  header-cell">Description</th>
-                </tr>
-              </thead>
-              <!-- テーブルのボディ -->
-              <tbody>
-                <tr v-for="cal in calendar">
-                  <td>{{ cal.pateinid }}</td>
-                  <td>{{ cal.sex }}</td>
-                  <td>{{ cal.age }}</td>
-                  <td>{{ cal.birstdate }}</td>
-                  <td>{{ cal.phone1 }}</td>
-                  <td>{{ cal.district }}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="modal-content">
+            <span class="close" @click="closeModal">&times;</span>
+            <!-- データベースから取得した情報を表示するコンテンツをここに記述 -->
+            <div class="my-2 justify-content-center">
+              <h2 class="detailed-title">Detailed Information</h2>
+              <p>{{ modalData.day }}</p>
+              <table id="pr-tb">
+                <!-- テーブルのヘッダー -->
+                <thead>
+                  <tr class="p-bg" style="text-align:center !important;">
+                    <th class="text-center  header-cell">Patient</th>
+                    <th class="text-center  header-cell">Sex</th>
+                    <th class="text-center  header-cell">Age</th>
+                    <th class="text-center  header-cell">Date of Birth</th>
+                    <th class="text-center  header-cell">Phone Number</th>
+                    <th class="text-center  header-cell">Description</th>
+                  </tr>
+                </thead>
+                <!-- テーブルのボディ -->
+                <tbody>
+                  <tr v-for="cal in calendar">
+                    <td>{{ cal.pateinid }}</td>
+                    <td>{{ cal.sex }}</td>
+                    <td>{{ cal.age }}</td>
+                    <td>{{ cal.birstdate }}</td>
+                    <td>{{ cal.phone1 }}</td>
+                    <td>{{ cal.district }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   </div>
@@ -282,19 +283,26 @@ export default {
       });
     },
     showDetails(day) {
-        this.modalData = {
-          day: day.day,
-          title: "Details for " + day.date,
-          description: "This is the description for " + day.date
-        };
-        this.showModal = true;
-      },
+      const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
+      const formattedDate = selectedDate.toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).replace(',', '');
+      
+      const formattedDateParts = formattedDate.split(' ');
+      const formattedDateInEnglish = `${formattedDateParts[1]} ${formattedDateParts[0]} ${formattedDateParts[2]}`;
+      this.modalData = {
+        day: formattedDateInEnglish,
+      };
+      this.showModal = true;
+    },
       closeModal() {
         this.showModal = false;
         this.modalData = null;
       },
-
   },
+
   mounted() {
     // axios.get("/api/calendar").then((response) => (this.datas = response.data));
     this.fetchPatients(); // ページが読み込まれた際にデータを取得

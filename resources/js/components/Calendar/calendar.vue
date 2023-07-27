@@ -60,8 +60,7 @@
                 :key="day.day"
                 class="calendar-color"
                 :class="{ outside: day.outside }"
-                style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray"
-                >
+                style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray">
                   <div class="day"><p>{{ day.day }}</p></div>
                   <div v-if="hasVisitDate(day)" class="mt-10">
                     <p class="day-p">{{ hasVisitDate(day) }}</p>
@@ -95,21 +94,48 @@
             <div class="my-2 justify-content-center">
               <h2 class="detailed-title">Detailed Information</h2>
               <p>{{ modalData.day }}</p>
-              <table id="pr-tb">
+              <table id="pr-tb" style="width: 100%;">
+                <!-- テーブルのヘッダー -->
+                <tbody>
+                  <tr class="p-bg text-center">
+                    <th class="header-cell table-cell">Patient</th>
+                    <th class="header-cell table-cell">Weekday</th>
+                  </tr>
+                  <!-- データ -->
+                  <tr>
+                    <td class="table-cell">Number of reservations</td>
+                    <td class="table-cell">{{ numberOfReservations }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-cell">Male</td>
+                    <td class="table-cell">{{ numberOfMale }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-cell">Female</td>
+                    <td class="table-cell">{{ numberOfFemale }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-cell">Child</td>
+                    <td class="table-cell">{{ numberOfChild }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table id="weekday-tb">
                 <!-- テーブルのヘッダー -->
                 <thead>
-                  <tr class="p-bg" style="text-align:center !important;">
-                    <th class="text-center  header-cell">Patient</th>
-                    <th class="text-center  header-cell">Sex</th>
-                    <th class="text-center  header-cell">Age</th>
-                    <th class="text-center  header-cell">Date of Birth</th>
-                    <th class="text-center  header-cell">Phone Number</th>
-                    <th class="text-center  header-cell">Description</th>
+                  <tr class="p-bg" style="text-align: center !important;">
+                    <th class="text-center header-cell">Patient</th>
+                    <th class="text-center header-cell">Sex</th>
+                    <th class="text-center header-cell">Age</th>
+                    <th class="text-center header-cell">Date of Birth</th>
+                    <th class="text-center header-cell">Phone Number</th>
+                    <th class="text-center header-cell">Description</th>
                   </tr>
                 </thead>
                 <!-- テーブルのボディ -->
                 <tbody>
-                  <tr v-for="cal in calendar">
+                  <tr v-for="cal in calendar" :key="cal.pateinid">
                     <td>{{ cal.pateinid }}</td>
                     <td>{{ cal.sex }}</td>
                     <td>{{ cal.age }}</td>
@@ -127,6 +153,7 @@
   </div>
   <Footer />
 </template>
+
 
 <script>
 import axios from "axios";
@@ -289,7 +316,7 @@ export default {
         month: 'long',
         year: 'numeric',
       }).replace(',', '');
-      
+
       const formattedDateParts = formattedDate.split(' ');
       const formattedDateInEnglish = `${formattedDateParts[1]} ${formattedDateParts[0]} ${formattedDateParts[2]}`;
       this.modalData = {
@@ -297,10 +324,10 @@ export default {
       };
       this.showModal = true;
     },
-      closeModal() {
-        this.showModal = false;
-        this.modalData = null;
-      },
+    closeModal() {
+      this.showModal = false;
+      this.modalData = null;
+    },
   },
 
   mounted() {

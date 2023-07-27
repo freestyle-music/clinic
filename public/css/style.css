@@ -10321,3 +10321,40 @@ input.text, input.email, input.password {
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   }
+
+.detailed-title {
+	text-align: left;
+	background-color: #f9a347;
+	padding: 4px;
+	position: relative;
+}
+
+.close {
+	position: absolute;
+	right: 30px;
+	top: 30px;
+	z-index: 1;
+	font-size: 35px;
+}
+  
+/* styles.css */
+
+/* テーブル全体のスタイル */
+#pr-tb {
+	width: 100%;
+  }
+  
+  /* ヘッダーのセル */
+  .text-center {
+	text-align: center;
+  }
+  
+  .header-cell {
+	font-weight: bold;
+  }
+  
+  /* テーブルのセル */
+  .table-cell {
+	width: 50%;
+  }
+  

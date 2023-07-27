@@ -60,9 +60,13 @@
                 :key="day.day"
                 class="calendar-color"
                 :class="{ outside: day.outside }"
-                style="min-height:125px; height: 58px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray"
+                style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray"
                 >
                   <div class="day"><p>{{ day.day }}</p></div>
+                  <div v-if="hasVisitDate(day)" class="mt-10">
+                    <p class="day-p">{{ hasVisitDate(day) }}</p>
+                    <p class="day-p">Patient</p>
+                  </div>
                   <div class="dflex">
                     <div v-if="hasVisitDate(day)" class="view day-btn">
                     <button>
@@ -70,9 +74,10 @@
                     </button>
                     </div>
                     <div v-if="hasVisitDate(day)" class="details day-btn">
-                      <button>
-                        <a href="">Details</a>
-                      </button>
+                      <button class="details-button" @click="showDetails(day)">Details</button>
+                      <!-- <button>
+                        <a href="" @click="showDetails">Details</a>
+                      </button> -->
                     </div>
                     <div v-else class="holiday">
                       holiday
@@ -83,6 +88,39 @@
             </tbody>
           </table>
         </div>
+        <div v-if="showModal" class="modal">
+        <div class="modal-content">
+          <span class="close" @click="closeModal">&times;</span>
+          <!-- データベースから取得した情報を表示するコンテンツをここに記述 -->
+          <div class="my-2 justify-content-center">
+            <p>Details for {{ modalData.day }}</p>
+            <table id="pr-tb">
+              <!-- テーブルのヘッダー -->
+              <thead>
+                <tr class="p-bg" style="text-align:center !important;">
+                  <th class="text-center  header-cell">Patient</th>
+                  <th class="text-center  header-cell">Sex</th>
+                  <th class="text-center  header-cell">Age</th>
+                  <th class="text-center  header-cell">Date of Birth</th>
+                  <th class="text-center  header-cell">Phone Number</th>
+                  <th class="text-center  header-cell">Description</th>
+                </tr>
+              </thead>
+              <!-- テーブルのボディ -->
+              <tbody>
+                <tr v-for="cal in calendar">
+                  <td>{{ cal.pateinid }}</td>
+                  <td>{{ cal.sex }}</td>
+                  <td>{{ cal.age }}</td>
+                  <td>{{ cal.birstdate }}</td>
+                  <td>{{ cal.phone1 }}</td>
+                  <td>{{ cal.district }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -110,13 +148,23 @@ export default {
       displayedYear: "",
       weekDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       calendarData: [],
+      showModal: false,
+      modalData: null,
     };
   },
   methods: {
     hasVisitDate(day) {
       const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
-      return this.visitDate.some(date => date !== null && new Date(date).toDateString() === selectedDate.toDateString());
+      const count = this.visitDate.reduce((acc, date) => {
+        if (date !== null && new Date(date).toDateString() === selectedDate.toDateString()) {
+          return acc + 1;
+        } else {
+          return acc;
+        }
+      }, 0);
+      return count;
     },
+
     generateCalendarData() {
       const firstDay = new Date(this.selectedYear, this.selectedMonth - 1, 1);
       const lastDay = new Date(this.selectedYear, this.selectedMonth, 0);
@@ -233,6 +281,18 @@ export default {
         console.error(error);
       });
     },
+    showDetails(day) {
+        this.modalData = {
+          day: day.day,
+          title: "Details for " + day.date,
+          description: "This is the description for " + day.date
+        };
+        this.showModal = true;
+      },
+      closeModal() {
+        this.showModal = false;
+        this.modalData = null;
+      },
 
   },
   mounted() {
@@ -258,6 +318,7 @@ export default {
   },
 
   components: { Header, Footer },
+
+
 };
 </script>
-ccc

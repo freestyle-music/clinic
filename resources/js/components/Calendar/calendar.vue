@@ -79,7 +79,7 @@
                       </button> -->
                     </div>
                     <div v-else class="holiday">
-                      holiday
+                      holihay
                     </div>
                   </div>
                 </td>
@@ -91,35 +91,37 @@
           <div class="modal-content">
             <span class="close" @click="closeModal">&times;</span>
             <!-- データベースから取得した情報を表示するコンテンツをここに記述 -->
-            <div class="my-2 justify-content-center">
-              <h2 class="detailed-title">Detailed Information</h2>
-              <p>{{ modalData.day }}</p>
-              <table id="pr-tb" style="width: 100%;">
+            <h2 class="detailed-title">Detailed Information</h2>
+            <div class="modal-table">
+              <p class="modal-day">{{ modalData.day }}</p>
+              <table id="pr-tb" >
                 <!-- テーブルのヘッダー -->
-                <tbody>
-                  <tr class="p-bg text-center">
-                    <th class="header-cell table-cell">Patient</th>
-                    <th class="header-cell table-cell">Weekday</th>
-                  </tr>
-                  <!-- データ -->
-                  <tr>
-                    <td class="table-cell">Number of reservations</td>
-                    <td class="table-cell">{{ numberOfReservations }}</td>
-                  </tr>
-                  <tr>
-                    <td class="table-cell">Male</td>
-                    <td class="table-cell">{{ numberOfMale }}</td>
-                  </tr>
-                  <tr>
-                    <td class="table-cell">Female</td>
-                    <td class="table-cell">{{ numberOfFemale }}</td>
-                  </tr>
-                  <tr>
-                    <td class="table-cell">Child</td>
-                    <td class="table-cell">{{ numberOfChild }}</td>
-                  </tr>
-                </tbody>
-              </table>
+                  <tbody>
+                    <tr class="p-bg text-center">
+                      <th class="header-cell table-cell">Patient</th>
+                      <th class="header-cell table-cell">Weekday</th>
+                    </tr>
+                    <!-- データ -->
+                    <tr>
+                      <td class="table-cell">Number of reservations</td>
+                      <td class="table-cell">{{ numberOfReservations }}</td>
+                    </tr>
+                    <tr>
+                      <td class="table-cell">Male</td>
+                      <td class="table-cell">{{ numberOfMale }}</td>
+                    </tr>
+                    <tr>
+                      <td class="table-cell">Female</td>
+                      <td class="table-cell">{{ numberOfFemale }}</td>
+                    </tr>
+                    <tr>
+                      <td class="table-cell">Child</td>
+                      <td class="table-cell">{{ numberOfChild }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div style="height: 50px;"></div>
+
 
               <table id="weekday-tb">
                 <!-- テーブルのヘッダー -->
@@ -135,13 +137,13 @@
                 </thead>
                 <!-- テーブルのボディ -->
                 <tbody>
-                  <tr v-for="cal in calendar" :key="cal.pateinid">
-                    <td>{{ cal.pateinid }}</td>
-                    <td>{{ cal.sex }}</td>
-                    <td>{{ cal.age }}</td>
-                    <td>{{ cal.birstdate }}</td>
-                    <td>{{ cal.phone1 }}</td>
-                    <td>{{ cal.district }}</td>
+                  <tr v-for="cal in modalData" :key="cal.paId">
+                    <td>{{ modalData.paId }}</td>
+                    <td>{{ modalData.sex }}</td>
+                    <td>{{ modalData.age }}</td>
+                    <td>{{ modalData.birstdate }}</td>
+                    <td>{{ modalData.phone1 }}</td>
+                    <td>{{ modalData.district }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -309,6 +311,7 @@ export default {
         console.error(error);
       });
     },
+
     showDetails(day) {
       const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
       const formattedDate = selectedDate.toLocaleDateString('en-US', {

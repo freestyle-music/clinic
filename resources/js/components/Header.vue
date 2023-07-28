@@ -3,7 +3,7 @@
     <ol id="topicPath">
       <li id="tpHome">
         <router-link to="/">
-          <a href="/menu/index"><img alt="" height="28" src="img/topicPath_home.png" width="28">
+          <a href="/menu/index"><img alt="" height="28" src="/img/topicPath_home.png" width="28">
           </a>
         </router-link>
       </li>

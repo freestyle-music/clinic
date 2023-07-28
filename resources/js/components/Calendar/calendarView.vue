@@ -3,7 +3,7 @@
     <div class="container-fuild">
       <div id="headTitle">
         <div id="logo">
-          <img alt="Healthbook" height="44" src="img/logo.png" width="70" />
+          <img alt="Healthbook" height="44" src="/img/logo.png" width="70" />
         </div>
         <h1 id="title">
           calender
@@ -46,9 +46,9 @@
                         <th>Male</th>
                         <td>{{ maleCount }}<br>people</td>
                         <th>Female</th>
-                        <td>{{ femaleCount }}people</td>
+                        <td>{{ femaleCount }}<br>people</td>
                         <th>child</th>
-                        <td>{{ childCount }}people</td>
+                        <td>{{ childCount }}<br>people</td>
                       </tr>
                     </tbody>
                   </table>
@@ -112,6 +112,9 @@ export default {
       // Vue Router のパラメータから日付情報を取得
       const dayDate = this.$route.params.dayDate;
 
+      // moment.jsを使って日付を変換
+      const formattedDate = moment(dayDate, 'DD').format('YYYY-MM-DD');
+
       // 選択された日付を表示
       this.selectedDate = dayDate;
 
@@ -119,22 +122,45 @@ export default {
         // 日付が一致するデータをサーバーから取得
         const response = await axios.get('/api/v1/calendar', {
           params: {
-            visitDate: dayDate
+            visitDate: formattedDate
           }
         });
-        this.visitDateData = response.data.datas;
+        this.visitDateData = response.data.datas.filter(data => {
+          const dataDate = new Date(data.visit_date);
+          return dataDate.toDateString() === new Date(formattedDate).toDateString();
+        });
 
-        // フィルタリングしたデータを元にカウントを行う
-        const maleCount = this.visitDateData.filter(data => data.sex === "Male").length;
-        const femaleCount = this.visitDateData.filter(data => data.sex === "Female").length;
-        const childCount = this.visitDateData.filter(data => data.age < 13).length;
+        // フィルタリングしたデータを元にMale、Female、Childのカウントを行う
+        let maleCount = 0;
+        let femaleCount = 0;
+        let childCount = 0;
+
+        this.visitDateData.forEach(data => {
+          if (data.sex === "Male") {
+            maleCount++;
+          } else if (data.sex === "Female") {
+            femaleCount++;
+          }
+
+          // データベースから取得したbirthDateと現在の日付から年齢を計算
+          const birthDate = new Date(data.birthdate);
+          const ageDiffMs = Date.now() - birthDate.getTime();
+          const ageDate = new Date(ageDiffMs); // ageDate will be a date starting from the epoch (1970-01-01)
+          const calculatedAge = Math.abs(ageDate.getUTCFullYear() - 1970); // Calculate the age
+
+          // 年齢が13未満の場合、childCountをインクリメント
+          if (calculatedAge < 13) {
+            childCount++;
+          }
+        });
 
         // カウントした結果を data にセット
         this.maleCount = maleCount;
         this.femaleCount = femaleCount;
         this.childCount = childCount;
+
       } catch (error) {
-        console.error(error);
+        console.error("Error in filterData:", error);
       }
     },
     showView(day) {
@@ -148,18 +174,6 @@ export default {
         this.showModal = false;
         this.modalData = null;
       },
-
-    hasVisitDate(day) {
-      const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
-      const count = this.visitDate.reduce((acc, date) => {
-        if (date !== null && new Date(date).toDateString() === selectedDate.toDateString()) {
-          return acc + 1;
-        } else {
-          return acc;
-        }
-      }, 0);
-      return count;
-    },
     getMonthName(month) {
       return moment().month(month - 1).format('MMMM');
     },

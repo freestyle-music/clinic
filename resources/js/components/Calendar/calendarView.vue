@@ -36,19 +36,19 @@
                   <table>
                     <thead>
                       <tr>
-                        <th>Consultation</th>
-                        <td>{{ selectedDate }}{{ getMonthName(displayedMonth) }} {{ displayedYear }}</td>
+                        <th class="cal-th">Consultation</th>
+                        <td class="cal-tll">{{ selectedDate }}{{ getMonthName(displayedMonth) }} {{ displayedYear }}</td>
                         <td class="day-btn"><button><a href="#">Change Date</a></button></td>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="cal-body">
                       <tr>
-                        <th>Male</th>
-                        <td>{{ maleCount }}<br>people</td>
-                        <th>Female</th>
-                        <td>{{ femaleCount }}<br>people</td>
-                        <th>child</th>
-                        <td>{{ childCount }}<br>people</td>
+                        <th class="cal-th">Male</th>
+                        <td class="cal-w18">{{ maleCount }}<br>people</td>
+                        <th class="cal-th">Female</th>
+                        <td class="cal-w18">{{ femaleCount }}<br>people</td>
+                        <th class="cal-th">child</th>
+                        <td class="cal-w18">{{ childCount }}<br>people</td>
                       </tr>
                     </tbody>
                   </table>
@@ -108,72 +108,144 @@ export default {
     this.filterData();
   },
   methods: {
-    async filterData() {
-      // Vue Router のパラメータから日付情報を取得
-      const dayDate = this.$route.params.dayDate;
-
-      // moment.jsを使って日付を変換
-      const formattedDate = moment(dayDate, 'DD').format('YYYY-MM-DD');
-
-      // 選択された日付を表示
-      this.selectedDate = dayDate;
-
-      try {
-        // 日付が一致するデータをサーバーから取得
-        const response = await axios.get('/api/v1/calendar', {
-          params: {
-            visitDate: formattedDate
-          }
-        });
-        this.visitDateData = response.data.datas.filter(data => {
-          const dataDate = new Date(data.visit_date);
-          return dataDate.toDateString() === new Date(formattedDate).toDateString();
-        });
-
-        // フィルタリングしたデータを元にMale、Female、Childのカウントを行う
-        let maleCount = 0;
-        let femaleCount = 0;
-        let childCount = 0;
-
-        this.visitDateData.forEach(data => {
-          if (data.sex === "Male") {
-            maleCount++;
-          } else if (data.sex === "Female") {
-            femaleCount++;
-          }
-
-          // データベースから取得したbirthDateと現在の日付から年齢を計算
-          const birthDate = new Date(data.birthdate);
-          const ageDiffMs = Date.now() - birthDate.getTime();
-          const ageDate = new Date(ageDiffMs); // ageDate will be a date starting from the epoch (1970-01-01)
-          const calculatedAge = Math.abs(ageDate.getUTCFullYear() - 1970); // Calculate the age
-
-          // 年齢が13未満の場合、childCountをインクリメント
-          if (calculatedAge < 13) {
-            childCount++;
-          }
-        });
-
-        // カウントした結果を data にセット
-        this.maleCount = maleCount;
-        this.femaleCount = femaleCount;
-        this.childCount = childCount;
-
-      } catch (error) {
-        console.error("Error in filterData:", error);
+    // Maleの13歳以上のカウントを返す関数
+  getMaleCount() {
+    return this.visitDateData.reduce((count, data) => {
+      if (data.sex === "Male" && this.calculateAge(data.birthdate) >= 13) {
+        count++;
       }
-    },
+      return count;
+    }, 0);
+  },
+
+  // Femaleの13歳以上のカウントを返す関数
+  getFemaleCount() {
+    return this.visitDateData.reduce((count, data) => {
+      if (data.sex === "Female" && this.calculateAge(data.birthdate) >= 13) {
+        count++;
+      }
+      return count;
+    }, 0);
+  },
+
+  // 13歳未満のカウントを返す関数
+  getChildCount() {
+    return this.visitDateData.reduce((count, data) => {
+      if (this.calculateAge(data.birthdate) < 13) {
+        count++;
+      }
+      return count;
+    }, 0);
+  },
+
+  // 誕生日を指定して年齢を計算する関数
+  calculateAge(birthdate) {
+    const birthDate = new Date(birthdate);
+    const currentDate = new Date();
+
+    let age = currentDate.getFullYear() - birthDate.getFullYear();
+
+    // 誕生日がまだ来ていなければ1歳引く
+    if (
+      currentDate.getMonth() < birthDate.getMonth() ||
+      (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  },
+
+  async filterData() {
+    // Vue Router のパラメータから日付情報を取得
+    const dayDate = this.$route.params.dayDate;
+
+    // moment.jsを使って日付を変換
+    const formattedDate = moment(dayDate, 'DD').format('YYYY-MM-DD');
+
+    // 選択された日付を表示
+    this.selectedDate = dayDate;
+
+    try {
+      // 日付が一致するデータをサーバーから取得
+      const response = await axios.get('/api/v1/calendar', {
+        params: {
+          visitDate: formattedDate
+        }
+      });
+      this.visitDateData = response.data.datas.filter(data => {
+        const dataDate = new Date(data.visit_date);
+        return dataDate.toDateString() === new Date(formattedDate).toDateString();
+      });
+
+      // フィルタリングしたデータを元にMale、Female、Childのカウントを行う
+      this.maleCount = this.getMaleCount();
+      this.femaleCount = this.getFemaleCount();
+      this.childCount = this.getChildCount();
+    } catch (error) {
+      console.error("Error in filterData:", error);
+    }
+  },
+
+  // Maleの13歳以上のカウントを返す関数
+  getMaleCount() {
+    return this.visitDateData.reduce((count, data) => {
+      if (data.sex === "Male" && this.calculateAge(data.birstdate) >= 13) {
+        count++;
+      }
+      return count;
+    }, 0);
+  },
+
+  // Femaleの13歳以上のカウントを返す関数
+  getFemaleCount() {
+    return this.visitDateData.reduce((count, data) => {
+      if (data.sex === "Female" && this.calculateAge(data.birstdate) >= 13) {
+        count++;
+      }
+      return count;
+    }, 0);
+  },
+
+  // 13歳未満のカウントを返す関数
+  getChildCount() {
+    return this.visitDateData.reduce((count, data) => {
+      if (this.calculateAge(data.birstdate) < 13) {
+        count++;
+      }
+      return count;
+    }, 0);
+  },
+
+  // 誕生日を指定して年齢を計算する関数
+  calculateAge(birthdate) {
+    const birthDate = new Date(birthdate);
+    const currentDate = new Date();
+
+    let age = currentDate.getFullYear() - birthDate.getFullYear();
+
+    // 誕生日がまだ来ていなければ1歳引く
+    if (
+      currentDate.getMonth() < birthDate.getMonth() ||
+      (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  },
+
     showView(day) {
-        this.modalData = {
-          title: "Details for " + day.date,
-          description: "This is the description for " + day.date
-        };
-        this.showModal = true;
-      },
-      closeModal() {
-        this.showModal = false;
-        this.modalData = null;
-      },
+      this.modalData = {
+        title: "Details for " + day.date,
+        description: "This is the description for " + day.date
+      };
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+      this.modalData = null;
+    },
     getMonthName(month) {
       return moment().month(month - 1).format('MMMM');
     },

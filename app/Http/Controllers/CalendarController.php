@@ -12,10 +12,12 @@ class CalendarController extends Controller
     public function index(Request $request) {
         $datas = prescriptions::all();
         $visitDate = Prescriptions::pluck('visit_date');
-        
+        $detailmode = prescription_view::all();
+
         return response()->json([
             'datas' => $datas,
             'visitDate' => $visitDate,
+            'detailmode' => $detailmode,
         ]);
     }
 }

@@ -79,7 +79,7 @@
                       </button> -->
                     </div>
                     <div v-else class="holiday">
-                      holihay
+                      holiday
                     </div>
                   </div>
                 </td>
@@ -122,31 +122,32 @@
                 </table>
                 <div style="height: 50px;"></div>
 
-
-              <table id="weekday-tb">
-                <!-- テーブルのヘッダー -->
-                <thead>
-                  <tr class="p-bg" style="text-align: center !important;">
-                    <th class="text-center header-cell">Patient</th>
-                    <th class="text-center header-cell">Sex</th>
-                    <th class="text-center header-cell">Age</th>
-                    <th class="text-center header-cell">Date of Birth</th>
-                    <th class="text-center header-cell">Phone Number</th>
-                    <th class="text-center header-cell">Description</th>
-                  </tr>
-                </thead>
-                <!-- テーブルのボディ -->
-                <tbody>
-                  <tr v-for="cal in modalData" :key="cal.paId">
-                    <td>{{ modalData.paId }}</td>
-                    <td>{{ modalData.sex }}</td>
-                    <td>{{ modalData.age }}</td>
-                    <td>{{ modalData.birstdate }}</td>
-                    <td>{{ modalData.phone1 }}</td>
-                    <td>{{ modalData.district }}</td>
-                  </tr>
-                </tbody>
-              </table>
+                <div class="modal-table scrollable-container">
+                  <table id="weekday-tb">
+                  <!-- テーブルのヘッダー -->
+                  <thead>
+                    <tr class="p-bg" style="text-align: center !important;">
+                      <th class="text-center header-cell">Patient</th>
+                      <th class="text-center header-cell">Sex</th>
+                      <th class="text-center header-cell">Age</th>
+                      <th class="text-center header-cell">Date of Birth</th>
+                      <th class="text-center header-cell">Phone Number</th>
+                      <th class="text-center header-cell">Description</th>
+                    </tr>
+                  </thead>
+                  <!-- テーブルのボディ -->
+                  <tbody>
+                    <tr v-for="cal in modalData.detailmode" :key="cal.paId">
+                      <td>{{ cal.lastname }} {{ cal.firstname }}</td>
+                      <td>{{ cal.sex }}</td>
+                      <td>{{ cal.age }}</td>
+                      <td>{{ cal.birstdate }}</td>
+                      <td>{{ cal.phone1 }}</td>
+                      <td>{{ cal.id }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -180,6 +181,7 @@ export default {
       calendarData: [],
       showModal: false,
       modalData: null,
+      detailmode: [],
     };
   },
   methods: {
@@ -193,6 +195,17 @@ export default {
         }
       }, 0);
       return count;
+    },
+
+    async fetchPatients() {
+      try {
+        const response = await axios.get('/api/v1/calendar');
+        this.datas = response.data.datas;
+        this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
+        this.detailmode = response.data.detailmode;
+      } catch (error) {
+        console.error(error);
+      }
     },
 
     generateCalendarData() {
@@ -306,6 +319,7 @@ export default {
       .then(response => {
         this.datas = response.data.datas;
         this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
+        this.detailmode = response.data.detailmode;
       })
       .catch(error => {
         console.error(error);
@@ -313,24 +327,34 @@ export default {
     },
 
     showDetails(day) {
-      const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
-      const formattedDate = selectedDate.toLocaleDateString('en-US', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }).replace(',', '');
+  const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
+  const formattedDate = selectedDate.toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).replace(',', '');
 
-      const formattedDateParts = formattedDate.split(' ');
-      const formattedDateInEnglish = `${formattedDateParts[1]} ${formattedDateParts[0]} ${formattedDateParts[2]}`;
-      this.modalData = {
-        day: formattedDateInEnglish,
-      };
-      this.showModal = true;
-    },
-    closeModal() {
-      this.showModal = false;
-      this.modalData = null;
-    },
+  const formattedDateParts = formattedDate.split(' ');
+  const formattedDateInEnglish = `${formattedDateParts[1]} ${formattedDateParts[0]} ${formattedDateParts[2]}`;
+
+  // PrescriptionsのvisitDateとカレンダーの日付を比較して、一致するデータを取得
+  const filteredDetails = this.detailmode.filter(data => {
+    const visitDate = new Date(data.visit_date);
+    return visitDate.toDateString() === selectedDate.toDateString();
+  });
+
+  this.modalData = {
+    day: formattedDateInEnglish,
+    detailmode: filteredDetails,
+  };
+
+  this.showModal = true;
+},
+
+closeModal() {
+     this.showModal = false;
+     this.modalData = null;
+     },
   },
 
   mounted() {

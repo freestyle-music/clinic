@@ -321,5 +321,4 @@ Route::group(['prefix' => 'v1'], function () {
 
     //calender
     Route::get('/calendar', [CalendarController::class, 'index']);
-    
 });

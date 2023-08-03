@@ -56,11 +56,12 @@
             <tbody>
               <tr v-for="(week, index) in calendarData" class="v-calendar-weekly__week" :key="index" style="border-left:1px solid gray;border-top:1px solid gray">
                 <td
-                v-for="day in week"
-                :key="day.day"
-                class="calendar-color"
-                :class="{ outside: day.outside }"
-                style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray">
+                  v-for="day in week"
+                  :key="day.day"
+                  class="calendar-color"
+                  :class="{ outside: day.outside }"
+                  style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray"
+                >
                   <div class="day"><p>{{ day.day }}</p></div>
                   <div v-if="hasVisitDate(day)" class="mt-10">
                     <p class="day-p">{{ hasVisitDate(day) }}</p>
@@ -68,15 +69,12 @@
                   </div>
                   <div class="dflex">
                     <div v-if="hasVisitDate(day)" class="view day-btn">
-                    <button>
-                      <a href="" @click="calendarView">View</a>
-                    </button>
+                      <button>
+                        <a href="" @click="calendarView">View</a>
+                      </button>
                     </div>
                     <div v-if="hasVisitDate(day)" class="details day-btn">
                       <button class="details-button" @click="showDetails(day)">Details</button>
-                      <!-- <button>
-                        <a href="" @click="showDetails">Details</a>
-                      </button> -->
                     </div>
                     <div v-else class="holiday">
                       holiday
@@ -90,33 +88,31 @@
         <div v-if="showModal" class="modal">
           <div class="modal-content">
             <span class="close" @click="closeModal">&times;</span>
-            <!-- データベースから取得した情報を表示するコンテンツをここに記述 -->
             <h2 class="detailed-title">Detailed Information</h2>
             <div class="modal-table">
               <p class="modal-day">{{ modalData.day }}</p>
               <table id="pr-tb" >
                 <!-- テーブルのヘッダー -->
-                  <tr>
-                    <td class="table-cell">Number of reservations</td>
-                    <td class="table-cell">{{ modalData.detailmode.length }}</td>
-                  </tr>
-                  <tr>
-                    <td class="table-cell">Male</td>
-                    <td class="table-cell">{{ numberOfMale }}</td>
-                  </tr>
-                  <tr>
-                    <td class="table-cell">Female</td>
-                    <td class="table-cell">{{ numberOfFemale }}</td>
-                  </tr>
-                  <tr>
-                    <td class="table-cell">Child</td>
-                    <td class="table-cell">{{ numberOfChild}}</td>
-                  </tr>
-                </table>
-                <div style="height: 50px;"></div>
-
-                <div class="modal-table scrollable-container">
-                  <table id="weekday-tb">
+                <tr>
+                  <td class="table-cell">Number of reservations</td>
+                  <td class="table-cell">{{ modalData.detailmode.length }}</td>
+                </tr>
+                <tr>
+                  <td class="table-cell">Male</td>
+                  <td class="table-cell">{{ numberOfMale - numberOfChild.Male }}</td>
+                </tr>
+                <tr>
+                  <td class="table-cell">Female</td>
+                  <td class="table-cell">{{ numberOfFemale - numberOfChild.Female }}</td>
+                </tr>
+                <tr>
+                  <td class="table-cell">Child</td>
+                  <td class="table-cell">{{ numberOfChild.Child }}</td>
+                </tr>
+              </table>
+              <div style="height: 50px;"></div>
+              <div class="modal-table scrollable-container">
+                <table id="weekday-tb">
                   <!-- テーブルのヘッダー -->
                   <thead>
                     <tr class="p-bg" style="text-align: center !important;">
@@ -149,6 +145,7 @@
   </div>
   <Footer />
 </template>
+
 
 
 <script>
@@ -307,51 +304,41 @@ export default {
     getMonthName(month) {
       return moment().month(month - 1).format('MMMM');
     },
-    fetchPatients() {
-      axios.get('/api/v1/calendar')
-      .then(response => {
-        this.datas = response.data.datas;
-        this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
-        this.detailmode = response.data.detailmode;
-      })
-      .catch(error => {
-        console.error(error);
+//モーダルウィンドウ
+    showDetails(day) {
+      const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
+      const formattedDate = selectedDate.toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).replace(',', '');
+
+      
+//予約人数の詳細
+      const formattedDateParts = formattedDate.split(' ');
+      const formattedDateInEnglish = `${formattedDateParts[1]} ${formattedDateParts[0]} ${formattedDateParts[2]}`;
+
+      // PrescriptionsのvisitDateとカレンダーの日付を比較して、一致するデータを取得
+      const filteredDetails = this.detailmode.filter(data => {
+        const visitDate = new Date(data.visit_date);
+        return visitDate.toDateString() === selectedDate.toDateString();
       });
+
+      this.modalData = {
+        day: formattedDateInEnglish,
+        detailmode: filteredDetails,
+      };
+
+      this.showModal = true;
     },
 
-    showDetails(day) {
-  const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
-  const formattedDate = selectedDate.toLocaleDateString('en-US', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).replace(',', '');
-
-  const formattedDateParts = formattedDate.split(' ');
-  const formattedDateInEnglish = `${formattedDateParts[1]} ${formattedDateParts[0]} ${formattedDateParts[2]}`;
-
-  // PrescriptionsのvisitDateとカレンダーの日付を比較して、一致するデータを取得
-  const filteredDetails = this.detailmode.filter(data => {
-    const visitDate = new Date(data.visit_date);
-    return visitDate.toDateString() === selectedDate.toDateString();
-  });
-
-  this.modalData = {
-    day: formattedDateInEnglish,
-    detailmode: filteredDetails,
-  };
-
-  this.showModal = true;
-},
-
-closeModal() {
-     this.showModal = false;
-     this.modalData = null;
-     },
+    closeModal() {
+      this.showModal = false;
+      this.modalData = null;
+    },
   },
 
   mounted() {
-    // axios.get("/api/calendar").then((response) => (this.datas = response.data));
     this.fetchPatients(); // ページが読み込まれた際にデータを取得
     const currentYear = this.currentDate.getFullYear();
     const currentMonth = this.currentDate.getMonth() + 1;
@@ -359,7 +346,6 @@ closeModal() {
     this.selectedMonth = currentMonth;
     this.displayedMonth = currentMonth;
     this.displayedYear = currentYear.toString();
-
 
     for (let year = 2000; year <= 2030; year++) {
       this.years.push(year);
@@ -374,31 +360,8 @@ closeModal() {
 
   components: { Header, Footer },
 
-  // 予約数
-
-// computed: {
-//   numberOfChild() {
-//     if (!this.modalData || !this.modalData.detailmode) return 0;
-//     const currentDate = new Date(); // 今日の日付を取得
-//     const count = { Male: 0, Female: 0, Child: 0 };
-//     this.modalData.detailmode.forEach(item => {
-//       const birthDate = new Date(item.birstdate);
-//       const age = currentDate.getFullYear() - birthDate.getFullYear();
-//       if (age <= 13) {
-//         count.Child++;
-//       } else {
-//         if (item.sex === 'Male') {
-//           count.Male++;
-//         } else if (item.sex === 'Female') {
-//           count.Female++;
-//         }
-//       }
-//     });
-//     return count;
-//   },
-// },
-
-computed: {
+//予約人数の表示
+  computed: {
     numberOfMale() {
       if (!this.modalData || !this.modalData.detailmode) return 0;
       return this.modalData.detailmode.filter(item => item.sex === 'Male').length;
@@ -408,24 +371,27 @@ computed: {
       return this.modalData.detailmode.filter(item => item.sex === 'Female').length;
     },
     numberOfChild() {
-      if (!this.modalData || !this.modalData.detailmode) return 0;
+      if (!this.modalData || !this.modalData.detailmode) return { Male: 0, Female: 0, Child: 0 };
       const currentDate = new Date();
-      let childCount = 0;
+      let maleChildCount = 0;
+      let femaleChildCount = 0;
       this.modalData.detailmode.forEach(item => {
         const birthDate = new Date(item.birstdate);
         const age = currentDate.getFullYear() - birthDate.getFullYear();
         if (age <= 13) {
           if (item.sex === 'Male') {
-            childCount++;
+            maleChildCount++;
           } else if (item.sex === 'Female') {
-            childCount++;
+            femaleChildCount++;
           }
         }
       });
-      return Math.max(childCount, 0); // Childの数が0未満にならないように調整
+      return {
+        Male: maleChildCount,
+        Female: femaleChildCount,
+        Child: maleChildCount + femaleChildCount,
+      };
     },
   },
-
-
 };
 </script>

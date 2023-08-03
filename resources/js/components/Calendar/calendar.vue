@@ -96,29 +96,22 @@
               <p class="modal-day">{{ modalData.day }}</p>
               <table id="pr-tb" >
                 <!-- テーブルのヘッダー -->
-                  <tbody>
-                    <tr class="p-bg text-center">
-                      <th class="header-cell table-cell">Patient</th>
-                      <th class="header-cell table-cell">Weekday</th>
-                    </tr>
-                    <!-- データ -->
-                    <tr>
-                      <td class="table-cell">Number of reservations</td>
-                      <td class="table-cell">{{ numberOfReservations }}</td>
-                    </tr>
-                    <tr>
-                      <td class="table-cell">Male</td>
-                      <td class="table-cell">{{ numberOfMale }}</td>
-                    </tr>
-                    <tr>
-                      <td class="table-cell">Female</td>
-                      <td class="table-cell">{{ numberOfFemale }}</td>
-                    </tr>
-                    <tr>
-                      <td class="table-cell">Child</td>
-                      <td class="table-cell">{{ numberOfChild }}</td>
-                    </tr>
-                  </tbody>
+                  <tr>
+                    <td class="table-cell">Number of reservations</td>
+                    <td class="table-cell">{{ modalData.detailmode.length }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-cell">Male</td>
+                    <td class="table-cell">{{ numberOfMale }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-cell">Female</td>
+                    <td class="table-cell">{{ numberOfFemale }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-cell">Child</td>
+                    <td class="table-cell">{{ numberOfChild}}</td>
+                  </tr>
                 </table>
                 <div style="height: 50px;"></div>
 
@@ -380,6 +373,58 @@ closeModal() {
   },
 
   components: { Header, Footer },
+
+  // 予約数
+
+// computed: {
+//   numberOfChild() {
+//     if (!this.modalData || !this.modalData.detailmode) return 0;
+//     const currentDate = new Date(); // 今日の日付を取得
+//     const count = { Male: 0, Female: 0, Child: 0 };
+//     this.modalData.detailmode.forEach(item => {
+//       const birthDate = new Date(item.birstdate);
+//       const age = currentDate.getFullYear() - birthDate.getFullYear();
+//       if (age <= 13) {
+//         count.Child++;
+//       } else {
+//         if (item.sex === 'Male') {
+//           count.Male++;
+//         } else if (item.sex === 'Female') {
+//           count.Female++;
+//         }
+//       }
+//     });
+//     return count;
+//   },
+// },
+
+computed: {
+    numberOfMale() {
+      if (!this.modalData || !this.modalData.detailmode) return 0;
+      return this.modalData.detailmode.filter(item => item.sex === 'Male').length;
+    },
+    numberOfFemale() {
+      if (!this.modalData || !this.modalData.detailmode) return 0;
+      return this.modalData.detailmode.filter(item => item.sex === 'Female').length;
+    },
+    numberOfChild() {
+      if (!this.modalData || !this.modalData.detailmode) return 0;
+      const currentDate = new Date();
+      let childCount = 0;
+      this.modalData.detailmode.forEach(item => {
+        const birthDate = new Date(item.birstdate);
+        const age = currentDate.getFullYear() - birthDate.getFullYear();
+        if (age <= 13) {
+          if (item.sex === 'Male') {
+            childCount++;
+          } else if (item.sex === 'Female') {
+            childCount++;
+          }
+        }
+      });
+      return Math.max(childCount, 0); // Childの数が0未満にならないように調整
+    },
+  },
 
 
 };

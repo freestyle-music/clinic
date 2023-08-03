@@ -70,8 +70,8 @@
                   <div class="dflex">
                     <div v-if="hasVisitDate(day)" class="view day-btn">
                     <button>
-                      <router-link :to="{ name: 'calendarView', params: { dayDate: day.day.toString() } }">
-                        <a href="#">View</a>
+                      <router-link :to="{ name: 'calendarView', params: { dayDate: day.day.toString(), month: day.dayData.month } }">
+                      <a href="#">View</a>
                       </router-link>
                     </button>
                     </div>
@@ -193,7 +193,11 @@ export default {
             weekRow.push({
               day: dayOfMonth,
               outside: false,
-              hasValue: targetDate.getTime() === visitDate.getTime() // 日付が一致する場合はhasValueをtrueに設定
+              hasValue: targetDate.getTime() === visitDate.getTime(),// 日付が一致する場合はhasValueをtrueに設定
+              dayData: {
+              dayOfMonth: dayOfMonth,
+              month: this.selectedMonth, // 選択された月を保存
+              },
             });
             currentDay++;
           }
@@ -273,6 +277,7 @@ export default {
     this.selectedMonth = currentMonth;
     this.displayedMonth = currentMonth;
     this.displayedYear = currentYear.toString();
+  
 
 
     for (let year = 2000; year <= 2030; year++) {

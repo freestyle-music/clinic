@@ -115,7 +115,7 @@ const routes = [
     {path: "/creatbeginnigstock", component: createbeginingstock, name: 'createbeginnigstock'},
     {path: "/calendar", component: calendar, name: 'calendar'},
     {path: "/calendarView", component: calendarView, name: 'calendarView'},
-    {path: "/calendarView/:dayDate?", component: calendarView, name: 'calendarView'},
+    {path: "/calendarView/:dayDate/:month", component: calendarView, name: 'calendarView'},
     
 ];
 export default createRouter({

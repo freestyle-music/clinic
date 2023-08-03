@@ -10326,9 +10326,12 @@ input.text, input.email, input.password {
 ---------------------------------------------------------------------------------------------------------*/
 .cal-tll {
 	text-align: center;
+	font-size: 16px;
+	font-weight: 700;
 }
 
 .cal-th {
+	width: 20%;
 	background-color: #4397ab;
 	border: 1px solid #6dB7bf;
 	padding: 10px;
@@ -10341,4 +10344,6 @@ input.text, input.email, input.password {
 .cal-w18 {
 	width: 18%;
 	padding: 10px;
+	font-size: 16px;
+	font-weight: 700;
 }

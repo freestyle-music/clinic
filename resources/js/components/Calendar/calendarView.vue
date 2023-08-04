@@ -38,7 +38,7 @@
                       <tr>
                         <th class="cal-th">Consultation</th>
                         <td class="cal-tll">{{ selectedDate }}{{ getMonthName(month) }} {{ displayedYear }}</td>
-                        <td class="day-btn"><button><a href="#">Change Date </a></button></td>
+                        <td class="day-btn"><button><a href="#">Change Date</a></button></td>
                       </tr>
                     </thead>
                     <tbody class="cal-body">
@@ -254,7 +254,7 @@ export default {
         const dataDate = new Date(data.visit_date);
         return dataDate.toDateString() === new Date(formattedDate).toDateString();
         });
-
+        
         const countDate = JSON.parse(JSON.stringify(filteredData));
 
         // Initialize the counts
@@ -277,12 +277,10 @@ export default {
       }
       });
 
-      // Update the data properties with the counts
       this.maleCount = maleCountAbove13;
       this.femaleCount = femaleCountAbove13;
       this.childCount = childCount;
 
-      // generateCalendarData() to update the calendar display
       this.generateCalendarData();
 
       } catch (error) {
@@ -303,7 +301,6 @@ export default {
       ) {
         age--;
       }
-      console.log(age);
       return age;
     },
 

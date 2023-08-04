@@ -38,7 +38,7 @@
                       <tr>
                         <th class="cal-th">Consultation</th>
                         <td class="cal-tll">{{ selectedDate }}{{ getMonthName(month) }} {{ displayedYear }}</td>
-                        <td class="day-btn"><button><a href="#"><input type="date" name="Change Date" id="">Change Date </a></button></td>
+                        <td class="day-btn"><button><a href="#">Change Date </a></button></td>
                       </tr>
                     </thead>
                     <tbody class="cal-body">
@@ -225,55 +225,6 @@ export default {
       this.showModal = true;
       this.generateCalendarData(); // カレンダーデータを生成
     },
-    
-    // Maleの13歳以上のカウントを返す関数
-    getMaleCount() {
-      const maleCount = this.filteredData.reduce((count, data) => {
-        if (data.sex === "Male" && this.calculateAge(data.birthdate) >= 13) {
-          count++;
-        }
-        return count;
-      }, 0);
-
-      return maleCount;
-    },
-    // Femaleの13歳以上のカウントを返す関数
-    getFemaleCount() {
-      return this.filteredData.reduce((count, data) => {
-        if (data.sex === "Female" && this.calculateAge(data.birthdate) >= 13) {
-          count++;
-        }
-        return count;
-      }, 0);
-    },
-
-    // 13歳未満のカウントを返す関数
-    getChildCount() {
-      return this.filteredData.reduce((count, data) => {
-        if (this.calculateAge(data.birthdate) < 13) {
-          count++;
-        }
-        return count;
-      }, 0);
-    },
-
-    // 誕生日を指定して年齢を計算する関数
-    calculateAge(birthdate) {
-      const birthDate = new Date(birthdate);
-      const currentDate = new Date();
-
-      let age = currentDate.getFullYear() - birthDate.getFullYear();
-
-      // 誕生日がまだ来ていなければ1歳引く
-      if (
-        currentDate.getMonth() < birthDate.getMonth() ||
-        (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())
-      ) {
-        age--;
-      }
-
-      return age;
-    },
 
     async filterData() {
       // Vue Router のパラメータから月日情報を取得
@@ -294,32 +245,66 @@ export default {
             visitDate: formattedDate
           }
         });
-        console.log(formattedDate);
         
         response.data.datas = Array.from(response.data.datas);
-
-        console.log(response.data.datas);
 
         this.visitDateData = response.data.datas; 
 
         const filteredData = Array.from(this.visitDateData).filter(data => {
-          const dataDate = new Date(data.visit_date);
-          return dataDate.toDateString() === new Date(formattedDate).toDateString();
+        const dataDate = new Date(data.visit_date);
+        return dataDate.toDateString() === new Date(formattedDate).toDateString();
         });
 
-        console.log(filteredData);
+        const countDate = JSON.parse(JSON.stringify(filteredData));
 
-        // フィルタリングしたデータを元にMale、Female、Childのカウントを行う
-        this.maleCount = this.getMaleCount();
-        this.femaleCount = this.getFemaleCount();
-        this.childCount = this.getChildCount();
+        // Initialize the counts
+        let maleCountAbove13 = 0;
+        let femaleCountAbove13 = 0;
+        let childCount = 0;
 
-        // generateCalendarData()を呼び出す
-        this.generateCalendarData();
+        // Calculate the age for each individual and update the counts accordingly
+        countDate.forEach(data => {
+          const birthDate = new Date(data.birstdate);
+          const age = this.calculateAge(birthDate);
+          if (age > 13) {
+            if (data.sex === 'Male') {
+              maleCountAbove13++;
+            } else if (data.sex === 'Female') {
+              femaleCountAbove13++;
+            }
+      } else {
+        childCount++;
+      }
+      });
+
+      // Update the data properties with the counts
+      this.maleCount = maleCountAbove13;
+      this.femaleCount = femaleCountAbove13;
+      this.childCount = childCount;
+
+      // generateCalendarData() to update the calendar display
+      this.generateCalendarData();
 
       } catch (error) {
         console.error("Error in filterData:", error);
       }
+    },
+
+     // 誕生日を指定して年齢を計算する関数
+     calculateAge(birstdate) {
+      const birthDate = new Date(birstdate);
+      const currentDate = new Date();
+
+      let age = currentDate.getFullYear() - birstdate.getFullYear();
+      // 誕生日がまだ来ていなければ1歳引く
+      if (
+        currentDate.getMonth() < birthDate.getMonth() ||
+        (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())
+      ) {
+        age--;
+      }
+
+      return age;
     },
 
     showView(day) {
@@ -364,7 +349,6 @@ export default {
       .then(response => {
         this.datas = response.data.datas;
         this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
-        this.resultFind = response.data.resultFind;
       })
       .catch(error => {
         console.error(error);

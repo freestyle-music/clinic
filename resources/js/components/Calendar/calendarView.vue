@@ -266,7 +266,7 @@ export default {
         countDate.forEach(data => {
           const birthDate = new Date(data.birstdate);
           const age = this.calculateAge(birthDate);
-          if (age > 13) {
+          if (age >= 13) {
             if (data.sex === 'Male') {
               maleCountAbove13++;
             } else if (data.sex === 'Female') {
@@ -303,7 +303,7 @@ export default {
       ) {
         age--;
       }
-
+      console.log(age);
       return age;
     },
 

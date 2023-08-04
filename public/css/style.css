@@ -10171,55 +10171,55 @@ input.text, input.email, input.password {
 	justify-content: space-around; */
 	background-color: #4397AB;
 	color: #fff;
-  }
+}
  
-  .calendar-grid {
+.calendar-grid {
 	/* カレンダーのグリッド部分のスタイル */
 	/* display: grid;
 	grid-template-columns: repeat(7, 1fr); */
 	background-color: #4397AB;
 	/* padding: 10px 10px 0; */
-  }
+}
 
-  .br-table th, td {
+.br-table th, td {
     background-color: #fff;
-  }
+}
 
-  .day p {
+.day p {
 	display: inline;
     padding: 4px;
     background-color: #4397AB;
     color: #fff;
-  }
+}
 
-  .calendar-youbi {
+.calendar-youbi {
 	font-weight: 700;
 	font-size: 20px;
 	flex: 1 1 0%;
     padding: 5px 0px;
     border-right: 1px solid gray;
 	text-align: center;
-  }
+}
 
-  .calendar-youbi:nth-child(7n),
-  .calendar-color:nth-child(7n) p {
+.calendar-youbi:nth-child(7n),
+.calendar-color:nth-child(7n) p {
 	background-color: #668eff;
-  }
+}
 
-  .calendar-youbi:nth-child(1),
-  .calendar-color:nth-child(1) p {
+.calendar-youbi:nth-child(1),
+.calendar-color:nth-child(1) p {
 	background-color: red;
-  }
+}
 
-  .outside {
+.outside {
 	background-color: #c3c3c3;
-  }
+}
 
-  .calendar-day {
+.calendar-day {
 	display: flex;
 	justify-content: center;
 	margin-bottom: 5px;
-  }
+}
   
   .holiday {
 	text-align: center;
@@ -10230,6 +10230,7 @@ input.text, input.email, input.password {
 	background-color: #f9a347;
 	border: none;
 	border-radius: 2px;
+	color: #FFF;
   }
 
   .day-btn button:hover {
@@ -10301,6 +10302,7 @@ input.text, input.email, input.password {
 	margin-top: -15px;
   }
 
+<<<<<<< HEAD
   .modal {
     position: fixed;
     top: 0;
@@ -10315,10 +10317,28 @@ input.text, input.email, input.password {
   }
   
   .modal-content {
+=======
+  /* モーダルウィンドウ */
+.modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+  
+.modal-content {
+>>>>>>> origin/develop1
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+<<<<<<< HEAD
   }
 
 /*---------------------------------------------------------------------------------------------------------
@@ -10347,3 +10367,66 @@ input.text, input.email, input.password {
 	font-size: 16px;
 	font-weight: 700;
 }
+=======
+	margin: auto;
+	width: 60%;
+}
+
+.detailed-title {
+	text-align: left;
+	background-color: #2e6c7b;
+	color: #fff;
+	padding: 4px;
+	position: relative;
+	margin-bottom: 30px;
+}
+
+.close {
+	position: absolute;
+	right: 30px;
+	top: 25px;
+	z-index: 1;
+	font-size: 35px;
+	color: #fff;
+}
+  
+.modal-day{
+	background-color: #4397ab;
+	color: #fff;
+	text-align: center;
+	height: 80%;
+	font-size: 20px;
+}
+
+.modal-table {
+	width: 90%;
+	margin: auto;
+}
+
+.table-cell {
+	width: 50%;
+	text-align: center;
+}
+
+.scrollable-container {
+	max-height: 300px;
+	overflow: auto;
+}
+
+.modal-table table {
+	border-collapse: collapse;
+	width: 100%;
+}
+  
+.modal-table table tr th,
+.modal-table table tr td {
+	text-align: center;
+	border: 1px solid #ccc;
+	padding: 8px;
+}
+  
+.scrollable-table {
+	max-height: 300px;
+	overflow-y: auto;
+}
+>>>>>>> origin/develop1

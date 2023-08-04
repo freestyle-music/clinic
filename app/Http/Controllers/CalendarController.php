@@ -10,12 +10,20 @@ use Illuminate\Support\Facades\DB;
 class CalendarController extends Controller
 {
     public function index(Request $request) {
+<<<<<<< HEAD
         $datas = prescription_view::all();
         $visitDate = prescription_view::pluck('visit_date');
         
+=======
+        $datas = prescriptions::all();
+        $visitDate = Prescriptions::pluck('visit_date');
+        $detailmode = prescription_view::all();
+
+>>>>>>> origin/develop1
         return response()->json([
             'datas' => $datas,
             'visitDate' => $visitDate,
+            'detailmode' => $detailmode,
         ]);
     }
 }

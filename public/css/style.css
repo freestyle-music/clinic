@@ -10407,3 +10407,9 @@ input.text, input.email, input.password {
 	font-size: 16px;
 	font-weight: 700;
 }
+
+/* プレースホルダーの文字色を白色に変更 */
+
+::placeholder {
+  color: #fff;
+}

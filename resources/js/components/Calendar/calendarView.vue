@@ -38,8 +38,7 @@
                         <tr>
                           <th class="cal-th">Consultation</th>
                           <td class="cal-tll">{{ selectedDate }}{{ getMonthName(month) }} {{ displayedYear }}</td>
-                          <!-- <td class="day-btn"><button><a href="#"><input type="date" name="Change Date" id="">Change Date </a></button></td> -->
-                              <flat-pickr v-model="changeDate" :config="flatpickrConfig" placeholder="Change Date" style="color: #fff; background-color: #f9a347; color: white;"/>
+                              <flat-pickr v-model="changeDate" :config="flatpickrConfig" placeholder="Change Date" style=" background-color: #f9a347; color: #fff; border: none; text-align: center;"/>
                           </tr>
                       </thead>
                       <tbody class="cal-body">
@@ -47,7 +46,6 @@
                           <th class="cal-th">Male</th>
                           <td class="cal-w18">{{ maleCount }}<br>people</td>
                           <th class="cal-th">Female</th>
-                          
                           <td class="cal-w18">{{ femaleCount }}<br>people</td>
                           <th class="cal-th">child</th>
                           <td class="cal-w18">{{ childCount }}<br>people</td>
@@ -114,7 +112,7 @@
   import Footer from "../footer.vue";
   import FlatPickr from 'vue-flatpickr-component';
   import 'flatpickr/dist/flatpickr.css';
-  
+
   export default {
     data() {
       return {
@@ -166,16 +164,16 @@
         const daysInMonth = lastDay.getDate();
         const calendarData = [];
         let currentDay = 1;
-  
+
         // visitDateを日付オブジェクトに変換
         const visitDate = new Date(this.selectedDate); // selectedDateの値をDateオブジェクトに変換
-  
+
         for (let week = 0; week < 6; week++) {
           const weekRow = [];
-  
+
           for (let day = 0; day < 7; day++) {
             let dayOfMonth; // dayOfMonthをループ内で定義
-  
+
             if (week === 0 && day < startDayOfWeek) {
               const prevMonthLastDay = new Date(
                 this.selectedYear,
@@ -202,7 +200,7 @@
               const month = this.selectedMonth;
               const day = currentDay;
               const targetDate = new Date(year, month - 1, day);
-  
+
               weekRow.push({
                 day: dayOfMonth,
                 outside: false,
@@ -211,84 +209,84 @@
               currentDay++;
             }
           }
-  
+
           // 6週目が翌月の日付だけの場合は表示しない
           if (weekRow.every(day => day.outside)) {
             break;
           }
-  
+
           calendarData.push(weekRow);
         }
-  
+
         this.calendarData = calendarData;
       },
-  
+
       openModal() {
         this.showModal = true;
         this.generateCalendarData(); // カレンダーデータを生成
       },
       
       // Maleの13歳以上のカウントを返す関数
-      getMaleCount() {
-        const maleCount = this.filteredData.reduce((count, data) => {
-          if (data.sex === "Male" && this.calculateAge(data.birthdate) >= 13) {
-            count++;
-          }
-          return count;
-        }, 0);
-  
-        return maleCount;
-      },
-      // Femaleの13歳以上のカウントを返す関数
-      getFemaleCount() {
-        return this.filteredData.reduce((count, data) => {
-          if (data.sex === "Female" && this.calculateAge(data.birthdate) >= 13) {
-            count++;
-          }
-          return count;
-        }, 0);
-      },
-  
-      // 13歳未満のカウントを返す関数
-      getChildCount() {
-        return this.filteredData.reduce((count, data) => {
-          if (this.calculateAge(data.birthdate) < 13) {
-            count++;
-          }
-          return count;
-        }, 0);
-      },
-  
-      // 誕生日を指定して年齢を計算する関数
-      calculateAge(birthdate) {
-        const birthDate = new Date(birthdate);
-        const currentDate = new Date();
-  
-        let age = currentDate.getFullYear() - birthDate.getFullYear();
-  
-        // 誕生日がまだ来ていなければ1歳引く
-        if (
-          currentDate.getMonth() < birthDate.getMonth() ||
-          (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())
-        ) {
-          age--;
-        }
-  
-        return age;
-      },
-  
+      // getMaleCount() {
+      //   const maleCount = this.filteredData.reduce((count, data) => {
+      //     if (data.sex === "Male" && this.calculateAge(data.birthdate) >= 13) {
+      //       count++;
+      //     }
+      //     return count;
+      //   }, 0);
+
+      //   return maleCount;
+      // },
+      // // Femaleの13歳以上のカウントを返す関数
+      // getFemaleCount() {
+      //   return this.filteredData.reduce((count, data) => {
+      //     if (data.sex === "Female" && this.calculateAge(data.birthdate) >= 13) {
+      //       count++;
+      //     }
+      //     return count;
+      //   }, 0);
+      // },
+
+      // // 13歳未満のカウントを返す関数
+      // getChildCount() {
+      //   return this.filteredData.reduce((count, data) => {
+      //     if (this.calculateAge(data.birthdate) < 13) {
+      //       count++;
+      //     }
+      //     return count;
+      //   }, 0);
+      // },
+
+      // // 誕生日を指定して年齢を計算する関数
+      // calculateAge(birthdate) {
+      //   const birthDate = new Date(birthdate);
+      //   const currentDate = new Date();
+
+      //   let age = currentDate.getFullYear() - birthDate.getFullYear();
+
+      //   // 誕生日がまだ来ていなければ1歳引く
+      //   if (
+      //     currentDate.getMonth() < birthDate.getMonth() ||
+      //     (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())
+      //   ) {
+      //     age--;
+      //   }
+
+      //   return age;
+      // },
+
       async filterData() {
         // Vue Router のパラメータから月日情報を取得
         const dayDate = this.$route.params.dayDate;
         const month = this.$route.params.month; 
-  
+
         // moment.jsを使って日付を変換
         const formattedDate = moment(`${dayDate}-${month}`, 'DD-MM').format('YYYY-MM-DD');//例）2023-07-18
-  
+
         // 選択された月日を表示
         this.selectedDate = dayDate;
         this.selectMonth = month;
-  
+
         try {
           // 日付が一致するデータをサーバーから取得
           const response = await axios.get('/api/v1/calendar', {
@@ -296,34 +294,69 @@
               visitDate: formattedDate
             }
           });
-          console.log(formattedDate);
           
           response.data.datas = Array.from(response.data.datas);
-  
-          console.log(response.data.datas);
-  
+
           this.visitDateData = response.data.datas; 
-  
+
           const filteredData = Array.from(this.visitDateData).filter(data => {
             const dataDate = new Date(data.visit_date);
             return dataDate.toDateString() === new Date(formattedDate).toDateString();
           });
-  
-          console.log(filteredData);
-  
+
+          // console.log(filteredData);
+          const countDate = JSON.parse(JSON.stringify(filteredData));
+
+          // Initialize the counts
+          let maleCountAbove13 = 0;
+          let femaleCountAbove13 = 0;
+          let childCount = 0;
+
+          // Calculate the age for each individual and update the counts accordingly
+          countDate.forEach(data => {
+            const birthDate = new Date(data.birstdate);
+            const age = this.calculateAge(birthDate);
+            if (age >= 13) {
+              if (data.sex === 'Male') {
+                maleCountAbove13++;
+              } else if (data.sex === 'Female') {
+                femaleCountAbove13++;
+              }
+            } else {
+              childCount++;
+            }
+          });
+
           // フィルタリングしたデータを元にMale、Female、Childのカウントを行う
-          this.maleCount = this.getMaleCount();
-          this.femaleCount = this.getFemaleCount();
-          this.childCount = this.getChildCount();
-  
+          this.maleCount = maleCountAbove13;
+          this.femaleCount = femaleCountAbove13;
+          this.childCount = childCount;
+
+
           // generateCalendarData()を呼び出す
           this.generateCalendarData();
-  
+
         } catch (error) {
           console.error("Error in filterData:", error);
         }
       },
-  
+
+      calculateAge(birstdate) {
+      const birthDate = new Date(birstdate);
+      const currentDate = new Date();
+
+      let age = currentDate.getFullYear() - birstdate.getFullYear();
+      // 誕生日がまだ来ていなければ1歳引く
+      if (
+        currentDate.getMonth() < birthDate.getMonth() ||
+        (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())
+      ) {
+        age--;
+      }
+      console.log(age);
+      return age;
+      },
+
       showView(day) {
         this.modalData = {
           title: "Details for " + day.date,
@@ -361,25 +394,16 @@
         }
         this.searchCalendar();
       },
-      handleDateChange(selectedDates) {
-      // selectedDates にはカレンダーで選択された日付が含まれる
-      if (selectedDates && selectedDates.length > 0) {
-        const selectedDate = moment(selectedDates[0]).format('YYYY-MM-DD');
-        // ページを新しい日付のページにリダイレクト
-        this.$router.push({ name: 'calendar', params: { date: selectedDate } });
-      }
-    },
-      // fetchPatients() {
-      //   axios.get('/api/v1/calendar')
-      //   .then(response => {
-      //     this.datas = response.data.datas;
-      //     this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
-      //     this.resultFind = response.data.resultFind;
-      //   })
-      //   .catch(error => {
-      //     console.error(error);
-      //   });
-      // },
+      fetchPatients() {
+        axios.get('/api/v1/calendar')
+          .then(response => {
+            this.datas = response.data.datas;
+            this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
     },
     mounted() {
       // axios.get("/api/calendar").then((response) => (this.datas = response.data));
@@ -393,16 +417,16 @@
       this.filterData();
       this.fetchPatients();
       this.month =  this.$route.params.month;
-  
+
       for (let year = 2000; year <= 2030; year++) {
         this.years.push(year);
       }
-  
+
       for (let month = 1; month <= 12; month++) {
         this.months.push(month);
       }
-      
+
     },
-    components: { Header, Footer, FlatPickr},
+    components: { Header, Footer, FlatPickr },
   };
-  </script>
+</script>

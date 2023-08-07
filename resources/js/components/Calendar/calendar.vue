@@ -60,8 +60,7 @@
                   :key="day.day"
                   class="calendar-color"
                   :class="{ outside: day.outside }"
-                  style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray"
-                >
+                  style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray">
                   <div class="day"><p>{{ day.day }}</p></div>
                   <div v-if="hasVisitDate(day)" class="mt-10">
                     <p class="day-p">{{ hasVisitDate(day) }}</p>
@@ -69,9 +68,11 @@
                   </div>
                   <div class="dflex">
                     <div v-if="hasVisitDate(day)" class="view day-btn">
-                      <button>
-                        <a href="" @click="calendarView">View</a>
-                      </button>
+                    <button>
+                      <router-link :to="{ name: 'calendarView', params: { dayDate: day.day.toString(), month: day.dayData.month } }">
+                      <a href="#">View</a>
+                      </router-link>
+                    </button>
                     </div>
                     <div v-if="hasVisitDate(day)" class="details day-btn">
                       <button class="details-button" @click="showDetails(day)">Details</button>
@@ -127,7 +128,7 @@
                   <!-- テーブルのボディ -->
                   <tbody>
                     <tr v-for="cal in modalData.detailmode" :key="cal.paId">
-                      <td>{{ cal.lastname }} {{ cal.firstname }}</td>
+                      <td>{{ cal.lstname }} {{ cal.firstname }}</td>
                       <td>{{ cal.sex }}</td>
                       <td>{{ cal.age }}</td>
                       <td>{{ cal.birstdate }}</td>
@@ -175,6 +176,18 @@ export default {
     };
   },
   methods: {
+    showView(day) {
+        this.modalData = {
+          title: "Details for " + day.date,
+          description: "This is the description for " + day.date
+        };
+        this.showModal = true;
+      },
+      closeModal() {
+        this.showModal = false;
+        this.modalData = null;
+      },
+
     hasVisitDate(day) {
       const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
       const count = this.visitDate.reduce((acc, date) => {
@@ -246,7 +259,11 @@ export default {
             weekRow.push({
               day: dayOfMonth,
               outside: false,
-              hasValue: targetDate.getTime() === visitDate.getTime() // 日付が一致する場合はhasValueをtrueに設定
+              hasValue: targetDate.getTime() === visitDate.getTime(), // 日付が一致する場合はhasValueをtrueに設定
+              dayData: {
+              dayOfMonth: dayOfMonth,
+              month: this.selectedMonth, // 選択された月を保存
+              },
             });
             currentDay++;
           }
@@ -304,6 +321,17 @@ export default {
     getMonthName(month) {
       return moment().month(month - 1).format('MMMM');
     },
+    // fetchPatients() {
+    //   axios.get('/api/v1/calendar')
+    //   .then(response => {
+    //     this.datas = response.data.datas;
+    //     this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
+    //     this.calendar = response.data.calendar;
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //   });
+    // },
 //モーダルウィンドウ
     showDetails(day) {
       const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
@@ -360,7 +388,8 @@ export default {
 
   components: { Header, Footer },
 
-//予約人数の表示
+//
+
   computed: {
     numberOfMale() {
       if (!this.modalData || !this.modalData.detailmode) return 0;
@@ -378,7 +407,7 @@ export default {
       this.modalData.detailmode.forEach(item => {
         const birthDate = new Date(item.birstdate);
         const age = currentDate.getFullYear() - birthDate.getFullYear();
-        if (age <= 13) {
+        if (age < 13) {
           if (item.sex === 'Male') {
             maleChildCount++;
           } else if (item.sex === 'Female') {

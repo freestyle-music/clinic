@@ -50,6 +50,7 @@ import TestInvoice from "./components/TestInvoice/testinvoice.vue";
 import detailshif from "./components/Detailcloseshif/detailshif.vue";
 import saledetail from "./components/Saledetail/saledetail.vue";
 import calendar from "./components/Calendar/calendar.vue";
+
 window.value = "Menu";
 const app = createApp({
     components: {

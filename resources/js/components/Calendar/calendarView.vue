@@ -1,275 +1,330 @@
 <template>
     <div class="wrapper">
-      <!-- header -->
       <div class="container-fuild">
         <div id="headTitle">
-          <div id="logo"> <img alt="Healthbook" height="44" src="img/logo.png" width="70"> </div>
-          <h1 id="title">Calendar</h1>
+          <div id="logo">
+            <img alt="Healthbook" height="44" src="/img/logo.png" width="70" />
+          </div>
+          <h1 id="title">
+            calender
+          </h1>
         </div>
       </div>
       <div class="container-fuild">
         <Header />
         <ol id="topicPath">
-          <li style="margin-left: 280px;">
-            <router-link to="/dashboard">
+          <li style="margin-left: 300px">
+            <router-link to="">
               <a href="dashbaord">
+                <font style="vertical-align: inherit"></font>
                 <font style="vertical-align: inherit">
-                  <font style="vertical-align: inherit"> Calendar </font>
+                  calenderView
                 </font>
               </a>
             </router-link>
           </li>
         </ol>
       </div>
-      <!-- header -->
+      <div class="p-3">
+        <div class="calendar-box">
+          <div class="search-box">
+            <div class="search-box_inner">
+              <div class="search-box">
+                <div class="search-box-title">Search</div>
+                <div class="box">
+                  <div class="box-content">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th class="cal-th">Consultation</th>
+                          <td class="cal-tll">{{ selectedDate }}{{ getMonthName(month) }} {{ displayedYear }}</td>
+                          <!-- <td class="day-btn"><button><a href="#"><input type="date" name="Change Date" id="">Change Date </a></button></td> -->
+                              <flat-pickr v-model="changeDate" :config="flatpickrConfig" placeholder="Change Date" style="color: #fff; background-color: #f9a347; color: white;"/>
+                          </tr>
+                      </thead>
+                      <tbody class="cal-body">
+                        <tr>
+                          <th class="cal-th">Male</th>
+                          <td class="cal-w18">{{ maleCount }}<br>people</td>
+                          <th class="cal-th">Female</th>
+                          
+                          <td class="cal-w18">{{ femaleCount }}<br>people</td>
+                          <th class="cal-th">child</th>
+                          <td class="cal-w18">{{ childCount }}<br>people</td>
+                        </tr>
+                      </tbody>
+                    </table>
   
-      <!-- calendar -->
-      <div class="container-fuild">
-        <div class="calendar">
-          <div class="header">
-            <div class="current-container">
-              <div class="current-month-year" v-if="!isSearching">
-                As of {{ getMonthName(currentDate.getMonth()) }} {{ currentDate.getFullYear() }}
-              </div>
-              <div class="current-month-year" v-if="isSearching">
-                As of {{ getMonthName(searchedMonth) }} {{ searchedYear }}
-              </div>
-              <div class="input-container">
-                <input id="year-input" v-model="inputYear" type="number" min="1900" max="2099" />
-                <label for="year-input">Year</label>
-              </div>
-              <div class="input-container">
-                <input id="month-input" v-model="inputMonth" type="number" min="1" max="12" />
-                <label for="month-input">Month</label>
-              </div>
-              <button class="search-button" @click="searchCalendar">Search</button>
-            </div>
-            <div class="arrow-container">
-              <button class="arrow-button left-arrow-button square-button" @click="previousYear">&lt;&lt;</button>
-              <button class="arrow-button square-button" @click="previousMonth">&lt;</button>
-              <div class="month" v-show="!isSearching || inputYear || inputMonth">
-                <button class="square-button this-button" @click="goToCurrentDate">this</button>
-              </div>
-              <button class="arrow-button square-button" @click="nextMonth">&gt;</button>
-              <button class="arrow-button right-arrow-button square-button" @click="nextYear">&gt;&gt;</button>
-            </div>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th v-for="day in daysOfWeek" :key="day">{{ day }}</th>
-              </tr>
-            </thead>
-            <tr>
-              <td class="blank-row" colspan="7"></td>
-            </tr>
-            <!-- カレンダーのテンプレート内 -->
-            <tbody>
-              <tr v-for="week in calendar" :key="week">
-                <td v-for="day in week" :key="day.date"
-                  :class="['calendar-day', { 'today': isToday(day), 'sunday': day.date === 0 }]">
-                  <div class="day-number">
-                    <div class="day">{{ day.date }}</div>
-                    <div class="center-buttons">
-                      <button class="view-button" @click="viewDetails(day)">View</button>
-                      <button class="details-button" @click="showDetails(day)">Details</button>
+                    <!-- modal  -->
+                    <div v-if="showModal" class="modal">
+                      <div class="modal-content">
+                        <div class="calendar-box-title search-box-title calendar-header">
+                          <div class="calendar-header_btn">
+                            <button type="button" @click="prevMonth">&lt;</button>
+                            <h2 class="calendar-title">{{ getMonthName(displayedMonth) }} {{ displayedYear }}</h2>
+                            <button type="button" @click="nextMonth">&gt;</button>
+                          </div>
+                        </div>
+                        <!-- カレンダーの内容 -->
+                        <div class="calendar-box-content">
+                          <table class="calendar-grid">
+                            <thead>
+                              <tr class="calendar-weekly">
+                                <th v-for="day in weekDays" :key="day" class="calendar-youbi">{{ day }}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(week, index) in calendarData" class="v-calendar-weekly__week" :key="index" style="border-left:1px solid gray;border-top:1px solid gray">
+                                <td
+                                  v-for="day in week"
+                                  :key="day.day"
+                                  class="calendar-color"
+                                  :class="{ outside: day.outside }"
+                                  style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray">
+                                  <div class="day"><p>{{ day.day }}</p></div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
-                    <!-- 来院予定がある場合 -->
-                    <div class="appointments-count" v-if="hasAppointment(day)">
-                      <p>{{ getTotalAppointments(day) }} 人</p>
-                    </div>
-                    <!-- 来院予定がない場合 -->
-                    <div class="holiday" v-else>
-                      <p>Holiday</p>
+                    <div class="search-box-footer">
+                      <div class="day-btn">
+                        <button  @click="goBack">
+                          <a href="/calendar">Back</a>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-  
-      <div v-if="showModal" class="modal">
-        <div class="modal-content">
-          <span class="close" @click="closeModal">&times;</span>
-          <!-- データベースから取得した情報を表示するコンテンツをここに記述 -->
-          <div class="my-2 justify-content-center">
-            <table id="pr-tb">
-              <!-- テーブルのヘッダー -->
-              <thead>
-                <tr class="p-bg" style="text-align:center !important;">
-                  <th class="text-center  header-cell">Patient</th>
-                  <th class="text-center  header-cell">Sex</th>
-                  <th class="text-center  header-cell">Age</th>
-                  <th class="text-center  header-cell">Date of Birth</th>
-                  <th class="text-center  header-cell">Phone Number</th>
-                  <th class="text-center  header-cell">Description</th>
-                </tr>
-              </thead>
-              <!-- テーブルのボディ -->
-              <tbody>
-                <tr v-for="cal in calendar">
-                  <td>{{ cal.pateinid }}</td>
-                  <td>{{ cal.sex }}</td>
-                  <td>{{ cal.age }}</td>
-                  <td>{{ cal.birstdate }}</td>
-                  <td>{{ cal.phone1 }}</td>
-                  <td>{{ cal.district }}</td>
-                </tr>
-              </tbody>
-            </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-  
-      <!-- footer -->
-      <div id="footer">
-        <div id="copyright"> Copyright (C) healthbook. ALL Rights Reserved Edit by Lsky </div>
-      </div>
-      <!-- footer -->
     </div>
+    <Footer />
   </template>
   
   <script>
   import axios from "axios";
-  import pagination from "laravel-vue-pagination";
   import Header from "../Header.vue";
+  import moment from 'moment';
+  import Footer from "../footer.vue";
+  import FlatPickr from 'vue-flatpickr-component';
+  import 'flatpickr/dist/flatpickr.css';
   
   export default {
-    components: {
-      Header
-    },
     data() {
       return {
-        currentMonth: "",
-        currentDate: null,
-        daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        calendar: [],
-        isSearching: false,
-        searchedYear: null,
-        searchedMonth: null,
-        inputYear: null,
-        inputMonth: null,
+        datas: [],
+        visitDate: [],
+        resultFind: [],
+        day: [],
+        currentDate: new Date(),
+        selectedYear: null,
+        selectedMonth: null,
+        years: [],
+        months: [],
+        displayedMonth: "",
+        displayedYear: "",
+        weekDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        calendarData: [],
         showModal: false,
         modalData: null,
-        prescriptions: [] // 来院予定のデータを格納する配列
+        selectedDate: null,
+        visitDateData: [],
+        maleCount: 0,
+        femaleCount: 0,
+        childCount: 0,
+        hasVisitDate: [],
+        month: null,
+        selectMonth: null,
+        filteredData: [],
       };
     },
     created() {
-      this.setCalendarData();
-      this.fetchPrescriptions();
-    },
-    mounted() {
-      window.addEventListener("resize", this.setCalendarData);
-    },
-    destroyed() {
-      window.removeEventListener("resize", this.setCalendarData);
+      // dayDateを使ってデータを取得・表示する処理を行う
+      const dayDate = this.$route.params.dayDate;
+      this.selectedDate = dayDate;
     },
     methods: {
-      setCalendarData() {
-        const now = this.currentDate || new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        const firstDayOfMonth = new Date(year, month, 1);
-        const lastDayOfMonth = new Date(year, month + 1, 0);
-        const numberOfDays = lastDayOfMonth.getDate();
-        const startingDayOfWeek = firstDayOfMonth.getDay();
-        const calendar = [];
+      goBack() {
+        // 1ステップ前に遷移する
+        this.$router.go(-1);
+      },
+      someMethod() {
+        // メソッド内で hasVisitDate を使用する場合
+        this.hasVisitDate();
+      },
+      generateCalendarData() {
+        const firstDay = new Date(this.selectedYear, this.selectedMonth - 1, 1);
+        const lastDay = new Date(this.selectedYear, this.selectedMonth, 0);
+        const startDayOfWeek = firstDay.getDay();
+        const endDayOfWeek = lastDay.getDay();
+        const daysInMonth = lastDay.getDate();
+        const calendarData = [];
+        let currentDay = 1;
   
-        let week = [];
-        for (let i = 0; i < startingDayOfWeek; i++) {
-          const prevMonthLastDay = new Date(year, month, 0).getDate();
-          const prevMonthDay = prevMonthLastDay - (startingDayOfWeek - i) + 1;
-          week.push({ date: prevMonthDay, text: "" });
-        }
+        // visitDateを日付オブジェクトに変換
+        const visitDate = new Date(this.selectedDate); // selectedDateの値をDateオブジェクトに変換
   
-        for (let day = 1; day <= numberOfDays; day++) {
-          week.push({ date: day, text: "" });
-          if (week.length === 7) {
-            calendar.push(week);
-            week = [];
+        for (let week = 0; week < 6; week++) {
+          const weekRow = [];
+  
+          for (let day = 0; day < 7; day++) {
+            let dayOfMonth; // dayOfMonthをループ内で定義
+  
+            if (week === 0 && day < startDayOfWeek) {
+              const prevMonthLastDay = new Date(
+                this.selectedYear,
+                this.selectedMonth - 1,
+                0
+              ).getDate();
+              dayOfMonth = prevMonthLastDay - startDayOfWeek + day + 1; // dayOfMonthを代入
+              weekRow.push({
+                day: dayOfMonth,
+                outside: true,
+                hasValue: false // hasValueをfalseに設定
+              });
+            } else if (currentDay > daysInMonth) {
+              dayOfMonth = currentDay - daysInMonth; // dayOfMonthを代入
+              weekRow.push({
+                day: dayOfMonth,
+                outside: true,
+                hasValue: false // hasValueをfalseに設定
+              });
+              currentDay++;
+            } else {
+              dayOfMonth = currentDay; // dayOfMonthを代入
+              const year = this.selectedYear;
+              const month = this.selectedMonth;
+              const day = currentDay;
+              const targetDate = new Date(year, month - 1, day);
+  
+              weekRow.push({
+                day: dayOfMonth,
+                outside: false,
+                hasValue: targetDate.getTime() === visitDate.getTime() // 日付が一致する場合はhasValueをtrueに設定
+              });
+              currentDay++;
+            }
           }
+  
+          // 6週目が翌月の日付だけの場合は表示しない
+          if (weekRow.every(day => day.outside)) {
+            break;
+          }
+  
+          calendarData.push(weekRow);
         }
   
-        if (week.length > 0) {
-          for (let i = 1; week.length < 7; i++) {
-            week.push({ date: i, text: "" });
+        this.calendarData = calendarData;
+      },
+  
+      openModal() {
+        this.showModal = true;
+        this.generateCalendarData(); // カレンダーデータを生成
+      },
+      
+      // Maleの13歳以上のカウントを返す関数
+      getMaleCount() {
+        const maleCount = this.filteredData.reduce((count, data) => {
+          if (data.sex === "Male" && this.calculateAge(data.birthdate) >= 13) {
+            count++;
           }
-          calendar.push(week);
+          return count;
+        }, 0);
+  
+        return maleCount;
+      },
+      // Femaleの13歳以上のカウントを返す関数
+      getFemaleCount() {
+        return this.filteredData.reduce((count, data) => {
+          if (data.sex === "Female" && this.calculateAge(data.birthdate) >= 13) {
+            count++;
+          }
+          return count;
+        }, 0);
+      },
+  
+      // 13歳未満のカウントを返す関数
+      getChildCount() {
+        return this.filteredData.reduce((count, data) => {
+          if (this.calculateAge(data.birthdate) < 13) {
+            count++;
+          }
+          return count;
+        }, 0);
+      },
+  
+      // 誕生日を指定して年齢を計算する関数
+      calculateAge(birthdate) {
+        const birthDate = new Date(birthdate);
+        const currentDate = new Date();
+  
+        let age = currentDate.getFullYear() - birthDate.getFullYear();
+  
+        // 誕生日がまだ来ていなければ1歳引く
+        if (
+          currentDate.getMonth() < birthDate.getMonth() ||
+          (currentDate.getMonth() === birthDate.getMonth() && currentDate.getDate() < birthDate.getDate())
+        ) {
+          age--;
         }
   
-        this.currentMonth = this.getMonthName(month);
-        this.currentDate = now;
-        this.calendar = calendar;
+        return age;
       },
-      getMonthName(month) {
-        const monthNames = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December"
-        ];
-        return monthNames[month];
-      },
-      previousYear() {
-        const prevYear = this.currentDate.getFullYear() - 1;
-        this.currentDate = new Date(prevYear, this.currentDate.getMonth(), this.currentDate.getDate());
-        this.setCalendarData();
-      },
-      previousMonth() {
-        const prevMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1);
-        this.currentDate = prevMonth;
-        this.setCalendarData();
-      },
-      nextYear() {
-        const nextYear = this.currentDate.getFullYear() + 1;
-        this.currentDate.setFullYear(nextYear);
-        this.setCalendarData();
-      },
-      nextMonth() {
-        const nextMonth = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1);
-        this.currentDate = nextMonth;
-        this.setCalendarData();
-      },
-      isToday(day) {
-        const today = new Date();
-        return (
-          day.date === today.getDate() &&
-          day.date !== "" &&
-          this.currentDate.getMonth() === today.getMonth() &&
-          this.currentDate.getFullYear() === today.getFullYear()
-        );
-      },
-      searchCalendar() {
-        if (this.inputYear && this.inputMonth) {
-          const year = parseInt(this.inputYear);
-          const month = parseInt(this.inputMonth) - 1;
-          if (!isNaN(year) && !isNaN(month)) {
-            this.currentDate = new Date(year, month, 1);
-            this.setCalendarData();
-            this.searchedYear = year;
-            this.searchedMonth = month;
-            this.inputYear = null;
-            this.inputMonth = null;
-          }
-        } else {
-          this.isSearching = false;
+  
+      async filterData() {
+        // Vue Router のパラメータから月日情報を取得
+        const dayDate = this.$route.params.dayDate;
+        const month = this.$route.params.month; 
+  
+        // moment.jsを使って日付を変換
+        const formattedDate = moment(`${dayDate}-${month}`, 'DD-MM').format('YYYY-MM-DD');//例）2023-07-18
+  
+        // 選択された月日を表示
+        this.selectedDate = dayDate;
+        this.selectMonth = month;
+  
+        try {
+          // 日付が一致するデータをサーバーから取得
+          const response = await axios.get('/api/v1/calendar', {
+            params: {
+              visitDate: formattedDate
+            }
+          });
+          console.log(formattedDate);
+          
+          response.data.datas = Array.from(response.data.datas);
+  
+          console.log(response.data.datas);
+  
+          this.visitDateData = response.data.datas; 
+  
+          const filteredData = Array.from(this.visitDateData).filter(data => {
+            const dataDate = new Date(data.visit_date);
+            return dataDate.toDateString() === new Date(formattedDate).toDateString();
+          });
+  
+          console.log(filteredData);
+  
+          // フィルタリングしたデータを元にMale、Female、Childのカウントを行う
+          this.maleCount = this.getMaleCount();
+          this.femaleCount = this.getFemaleCount();
+          this.childCount = this.getChildCount();
+  
+          // generateCalendarData()を呼び出す
+          this.generateCalendarData();
+  
+        } catch (error) {
+          console.error("Error in filterData:", error);
         }
       },
-      goToCurrentDate() {
-        this.currentDate = new Date();
-        this.setCalendarData();
-      },
-      showDetails(day) {
+  
+      showView(day) {
         this.modalData = {
           title: "Details for " + day.date,
           description: "This is the description for " + day.date
@@ -280,295 +335,74 @@
         this.showModal = false;
         this.modalData = null;
       },
-  
-      fetchPrescriptions() {
-        axios
-          .get("api/v1/prescription/index/")
-          .then(response => {
-            this.prescriptions = response.data.prescriptions;
-            this.setCalendarData();
-          })
-          .catch(error => {
-            console.error('Failed to fetch prescriptions:', error);
-          });
+      getMonthName(month) {
+        return moment().month(month - 1).format('MMMM');
       },
-  
-      hasAppointment(day) {
-        const currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day.date);
-        return this.prescriptions.some(prescription => {
-          const visitDate = new Date(prescription.visit_date);
-          return currentDate.toDateString() === visitDate.toDateString();
-        });
+      searchCalendar() {
+        this.displayedMonth = this.months[this.selectedMonth - 1];
+        this.displayedYear = this.selectedYear.toString();
+        this.generateCalendarData();
       },
-  
-      getTotalAppointments(day) {
-        const currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day.date);
-        const appointmentsOnDay = this.prescriptions.filter(prescription => {
-          const visitDate = new Date(prescription.visit_date);
-          return currentDate.toDateString() === visitDate.toDateString();
-        });
-        return appointmentsOnDay.length;
+      prevMonth() {
+        if (this.selectedMonth === 1) {
+          this.selectedMonth = 12;
+          this.selectedYear--;
+        } else {
+          this.selectedMonth--;
+        }
+        this.searchCalendar();
+      },
+      nextMonth() {
+        if (this.selectedMonth === 12) {
+          this.selectedMonth = 1;
+          this.selectedYear++;
+        } else {
+          this.selectedMonth++;
+        }
+        this.searchCalendar();
+      },
+      handleDateChange(selectedDates) {
+      // selectedDates にはカレンダーで選択された日付が含まれる
+      if (selectedDates && selectedDates.length > 0) {
+        const selectedDate = moment(selectedDates[0]).format('YYYY-MM-DD');
+        // ページを新しい日付のページにリダイレクト
+        this.$router.push({ name: 'calendar', params: { date: selectedDate } });
       }
-    }
+    },
+      // fetchPatients() {
+      //   axios.get('/api/v1/calendar')
+      //   .then(response => {
+      //     this.datas = response.data.datas;
+      //     this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
+      //     this.resultFind = response.data.resultFind;
+      //   })
+      //   .catch(error => {
+      //     console.error(error);
+      //   });
+      // },
+    },
+    mounted() {
+      // axios.get("/api/calendar").then((response) => (this.datas = response.data));
+      const currentYear = this.currentDate.getFullYear();
+      const currentMonth = this.currentDate.getMonth() + 1;
+      this.selectedYear = currentYear;
+      this.selectedMonth = currentMonth;
+      this.displayedMonth = currentMonth;
+      this.displayedYear = currentYear.toString();
+      this.selectedDate = this.$route.params.date;
+      this.filterData();
+      this.fetchPatients();
+      this.month =  this.$route.params.month;
+  
+      for (let year = 2000; year <= 2030; year++) {
+        this.years.push(year);
+      }
+  
+      for (let month = 1; month <= 12; month++) {
+        this.months.push(month);
+      }
+      
+    },
+    components: { Header, Footer, FlatPickr},
   };
   </script>
-  
-  <style scoped>
-  html,
-  body {
-    height: 100%;
-  }
-  
-  .wrapper {
-    font-family: Arial, sans-serif;
-  }
-  
-  .container-fluid {
-    width: 100%;
-  }
-  
-  .calendar {
-    margin: 10px 10px 25px;
-    border: 1px solid #ddedeb;
-    box-shadow: 0px 0px 6px #147f7c;
-  }
-  
-  .header {
-    background-color: #0d4c62;
-    border: 10px solid #0d4c62;
-  }
-  
-  .current-container {
-    display: flex;
-    color: #f8f5b4;
-    float: left;
-  }
-  
-  .current-month-year {
-    font-size: 15px;
-    margin-left: 10px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .input-container {
-    color: #f8f5b4;
-    margin-left: 10px;
-    font-size: 15px;
-    height: 20px;
-  }
-  
-  .input-container input {
-    height: 100%;
-  }
-  
-  .search-button {
-    margin-left: 15px;
-    height: 20px;
-    font-size: 15px;
-    border-radius: 3px;
-    border: 1px solid #ccc;
-    color: #ffffff;
-    background-color: #4397AB;
-    display: flex;
-    align-items: center;
-  }
-  
-  .arrow-container {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .arrow-button {
-    font-size: 15px;
-    background-color: #ffffff;
-    border: none;
-    cursor: pointer;
-    margin: 0 5px;
-    color: #4397AB;
-  }
-  
-  .left-arrow-button,
-  .right-arrow-button {
-    color: #4397AB;
-  }
-  
-  .square-button {
-    width: 25px;
-    height: 20px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .this-button {
-    color: #ffffff;
-    background-color: #4397AB;
-    width: 50px;
-    height: 20px;
-    font-size: 15px;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #ffffff;
-  }
-  
-  th {
-    height: 1em;
-  }
-  
-  th,
-  td {
-    width: calc(100% / 7);
-    padding: 5px;
-    text-align: center;
-    border: 1px solid #ccc;
-    font-size: 13px;
-  }
-  
-  thead th {
-    background-color: #4397AB;
-    color: #fff;
-  }
-  
-  thead th:first-child {
-    background-color: #dd4356;
-  }
-  
-  thead th:last-child {
-    background-color: #45a6db;
-  }
-  
-  th:first-child,
-  td:nth-child(7n+1) {
-    color: #ffffff;
-  }
-  
-  th:last-child,
-  td:nth-child(7n) {
-    color: #ffffff;
-  }
-  
-  td:nth-child(7n+1) .day-number .day {
-    background-color: #dd4356;
-  }
-  
-  .blank-row {
-    height: 30px;
-    background-color: #ffffff;
-  }
-  
-  .day {
-    color: #ffffff;
-  }
-  
-  .today {
-    background-color: #e0e0e0;
-  }
-  
-  .calendar-day {
-    height: 75px;
-    position: relative;
-  }
-  
-  .day-number {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
-  
-  .day-number .day {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    font-size: 14px;
-    background-color: #4397AB;
-  }
-  
-  #footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  }
-  
-  .view-button {
-    width: 60px;
-    height: 24px;
-    background-color: #ff8400;
-    border: none;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    margin-right: 6px;
-  }
-  
-  .details-button {
-    width: 60px;
-    height: 24px;
-    background-color: #ff8400;
-    border: none;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    margin-left: 6px;
-  }
-  
-  .center-buttons {
-    display: flex;
-    margin-top: 10px;
-    margin-left: 20px;
-  }
-  
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 80%;
-    background-color: rgba(0, 0, 0, 0.7);
-    /* 半透明の背景色 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .header-cell {
-    background-color: #4397AB !important;
-    /* ヘッダーの背景色を変更 */
-    color: #fff;
-    /* ヘッダーのテキスト色を白に設定 */
-  }
-  
-  .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 10px;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  
-  .holiday {
-    position: absolute;
-    top: 50%;
-    left: 55%;
-    transform: translate(-50%, -50%);
-    font-size: 14px;
-    font-weight: bold;
-    color: #000000;
-  }</style>

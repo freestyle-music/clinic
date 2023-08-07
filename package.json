@@ -12,7 +12,7 @@
         "production": "mix --production"
     },
     "devDependencies": {
-        "@popperjs/core": "^2.10.2",
+        "@popperjs/core": "^2.11.8",
         "@vue/compiler-sfc": "^3.2.31",
         "bootstrap": "^5.1.3",
         "laravel-mix": "^6.0.49",
@@ -40,6 +40,7 @@
         "read-excel-file": "^5.5.3",
         "sweetalert2": "^11.7.12",
         "vform": "^2.1.2",
+        "vue-flatpickr-component": "^11.0.3",
         "vue-html-to-paper": "^1.4.4",
         "vue-router": "^4.0.12",
         "vue-socket.io": "^3.0.10",

@@ -209,7 +209,7 @@
           // 日付が一致するデータをサーバーから取得
           const response = await axios.get('/api/v1/calendar', {
             params: {
-              visitDate: formattedDate,
+              visitDate: formattedDate
             }
           });
           
@@ -270,6 +270,8 @@
       ) {
         age--;
       }
+      console.log(age);
+      return age;
       },
 
       showView(day) {

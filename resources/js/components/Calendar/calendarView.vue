@@ -37,7 +37,7 @@
                       <thead>
                         <tr>
                           <th class="cal-th">Consultation</th>
-                          <td class="cal-tll">{{ changeDate ? formatDate(changeDate) : `${selectedDate}${getMonthName(month)} ${displayedYear}` }}</td>
+                          <td class="cal-tll">{{ changeDate ? formatDate(changeDate) : `${selectedDate} ${getMonthName(month)} ${displayedYear}` }}</td>
                               <flat-pickr v-model="changeDate" :config="flatpickrConfig" placeholder="Change Date" style=" background-color: #f9a347; color: #fff; border: none; text-align: center;"/>
                           </tr>
                       </thead>
@@ -117,7 +117,7 @@
     methods: {
       formatDate(date) {
         // Moment.js を使用して指定したフォーマットで日付を表示
-        return moment(date).format('D MMM YYYY');
+        return moment(date).format('D MMMM YYYY');
       },
       someMethod() {
         // メソッド内で hasVisitDate を使用する場合
@@ -327,9 +327,6 @@
         // changeDate の値が存在する場合に true を返す
         return this.changeDate !== null && this.changeDate !== undefined;
       },
-      formatdata(date) {
-        return moment(date).format('DD MMM YYYY');
-      }
     },
     mounted() {
       // axios.get("/api/calendar").then((response) => (this.datas = response.data));

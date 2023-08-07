@@ -60,12 +60,8 @@
                 :key="day.day"
                 class="calendar-color"
                 :class="{ outside: day.outside }"
-<<<<<<< HEAD
                 style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray"
                 >
-=======
-                style="min-height:125px; height: 78px; width: 10%; padding: 4px 0 0 4px; border-right:1px solid gray; border-bottom:1px solid gray">
->>>>>>> origin/develop1
                   <div class="day"><p>{{ day.day }}</p></div>
                   <div v-if="hasVisitDate(day)" class="mt-10">
                     <p class="day-p">{{ hasVisitDate(day) }}</p>
@@ -80,16 +76,7 @@
                     </button>
                     </div>
                     <div v-if="hasVisitDate(day)" class="details day-btn">
-<<<<<<< HEAD
-                      <button @click="showDetail(day)">
-                        <a href="">Details</a>
-                      </button>
-=======
                       <button class="details-button" @click="showDetails(day)">Details</button>
-                      <!-- <button>
-                        <a href="" @click="showDetails">Details</a>
-                      </button> -->
->>>>>>> origin/develop1
                     </div>
                     <div v-else class="holiday">
                       holiday
@@ -145,7 +132,13 @@
                   <tbody>
                     <tr v-for="cal in modalData.detailmode" :key="cal.paId">
                       <td>{{ cal.lastname }} {{ cal.firstname }}</td>
-                      <td>{{ cal.sex }}</td>
+                      <td>
+                        <!-- 条件に応じて表示内容を切り替える -->
+                        <span v-if="cal.age >= 13 && cal.sex === 'Male'">M</span>
+                        <span v-else-if="cal.age >= 13 && cal.sex === 'Female'">F</span>
+                        <span v-else-if="cal.age < 13 && cal.sex === 'Male'">C/M</span>
+                        <span v-else-if="cal.age < 13 && cal.sex === 'Female'">C/F</span>
+                      </td>
                       <td>{{ cal.age }}</td>
                       <td>{{ cal.birstdate }}</td>
                       <td>{{ cal.phone1 }}</td>
@@ -162,7 +155,6 @@
   </div>
   <Footer />
 </template>
-
 
 <script>
 import axios from "axios";
@@ -187,25 +179,10 @@ export default {
       calendarData: [],
       showModal: false,
       modalData: null,
-<<<<<<< HEAD
-=======
       detailmode: [],
->>>>>>> origin/develop1
     };
   },
   methods: {
-    showView(day) {
-        this.modalData = {
-          title: "Details for " + day.date,
-          description: "This is the description for " + day.date
-        };
-        this.showModal = true;
-      },
-      closeModal() {
-        this.showModal = false;
-        this.modalData = null;
-      },
-
     hasVisitDate(day) {
       const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
       const count = this.visitDate.reduce((acc, date) => {
@@ -218,20 +195,6 @@ export default {
       return count;
     },
 
-<<<<<<< HEAD
-=======
-    async fetchPatients() {
-      try {
-        const response = await axios.get('/api/v1/calendar');
-        this.datas = response.data.datas;
-        this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
-        this.detailmode = response.data.detailmode;
-      } catch (error) {
-        console.error(error);
-      }
-    },
-
->>>>>>> origin/develop1
     generateCalendarData() {
       const firstDay = new Date(this.selectedYear, this.selectedMonth - 1, 1);
       const lastDay = new Date(this.selectedYear, this.selectedMonth, 0);
@@ -347,48 +310,41 @@ export default {
       .then(response => {
         this.datas = response.data.datas;
         this.visitDate = JSON.parse(JSON.stringify(response.data.visitDate)); // Proxy(Array)を通常の配列に変換
-<<<<<<< HEAD
-        this.calendar = response.data.calendar;
-=======
         this.detailmode = response.data.detailmode;
->>>>>>> origin/develop1
       })
       .catch(error => {
         console.error(error);
       });
     },
-
     showDetails(day) {
-  const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
-  const formattedDate = selectedDate.toLocaleDateString('en-US', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).replace(',', '');
+      const selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, day.day);
+      const formattedDate = selectedDate.toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).replace(',', '');
 
-  const formattedDateParts = formattedDate.split(' ');
-  const formattedDateInEnglish = `${formattedDateParts[1]} ${formattedDateParts[0]} ${formattedDateParts[2]}`;
+      const formattedDateParts = formattedDate.split(' ');
+      const formattedDateInEnglish = `${formattedDateParts[1]} ${formattedDateParts[0]} ${formattedDateParts[2]}`;
 
-  // PrescriptionsのvisitDateとカレンダーの日付を比較して、一致するデータを取得
-  const filteredDetails = this.detailmode.filter(data => {
-    const visitDate = new Date(data.visit_date);
-    return visitDate.toDateString() === selectedDate.toDateString();
-  });
+      // PrescriptionsのvisitDateとカレンダーの日付を比較して、一致するデータを取得
+      const filteredDetails = this.detailmode.filter(data => {
+        const visitDate = new Date(data.visit_date);
+        return visitDate.toDateString() === selectedDate.toDateString();
+      });
 
-  this.modalData = {
-    day: formattedDateInEnglish,
-    detailmode: filteredDetails,
-  };
+      this.modalData = {
+        day: formattedDateInEnglish,
+        detailmode: filteredDetails,
+      };
+        this.showModal = true;
+    },
 
-  this.showModal = true;
-},
-
-closeModal() {
-     this.showModal = false;
-     this.modalData = null;
-     },
+    closeModal() {
+      this.showModal = false;
+      this.modalData = null;
+    },
   },
-
   mounted() {
     // axios.get("/api/calendar").then((response) => (this.datas = response.data));
     this.fetchPatients(); // ページが読み込まれた際にデータを取得
@@ -399,8 +355,6 @@ closeModal() {
     this.displayedMonth = currentMonth;
     this.displayedYear = currentYear.toString();
   
-
-
     for (let year = 2000; year <= 2030; year++) {
       this.years.push(year);
     }
@@ -414,38 +368,14 @@ closeModal() {
 
   components: { Header, Footer },
 
-  // 予約数
-
-// computed: {
-//   numberOfChild() {
-//     if (!this.modalData || !this.modalData.detailmode) return 0;
-//     const currentDate = new Date(); // 今日の日付を取得
-//     const count = { Male: 0, Female: 0, Child: 0 };
-//     this.modalData.detailmode.forEach(item => {
-//       const birthDate = new Date(item.birstdate);
-//       const age = currentDate.getFullYear() - birthDate.getFullYear();
-//       if (age <= 13) {
-//         count.Child++;
-//       } else {
-//         if (item.sex === 'Male') {
-//           count.Male++;
-//         } else if (item.sex === 'Female') {
-//           count.Female++;
-//         }
-//       }
-//     });
-//     return count;
-//   },
-// },
-
-computed: {
+  computed: {
     numberOfMale() {
       if (!this.modalData || !this.modalData.detailmode) return 0;
-      return this.modalData.detailmode.filter(item => item.sex === 'Male').length;
+      return this.modalData.detailmode.filter(item => item.sex === 'Male' && item.age >= 13).length;
     },
     numberOfFemale() {
       if (!this.modalData || !this.modalData.detailmode) return 0;
-      return this.modalData.detailmode.filter(item => item.sex === 'Female').length;
+      return this.modalData.detailmode.filter(item => item.sex === 'Female' && item.age >= 13).length;
     },
     numberOfChild() {
       if (!this.modalData || !this.modalData.detailmode) return 0;
@@ -454,7 +384,7 @@ computed: {
       this.modalData.detailmode.forEach(item => {
         const birthDate = new Date(item.birstdate);
         const age = currentDate.getFullYear() - birthDate.getFullYear();
-        if (age <= 13) {
+        if (item.age < 13) {
           if (item.sex === 'Male') {
             childCount++;
           } else if (item.sex === 'Female') {
@@ -465,7 +395,5 @@ computed: {
       return Math.max(childCount, 0); // Childの数が0未満にならないように調整
     },
   },
-
-
 };
 </script>

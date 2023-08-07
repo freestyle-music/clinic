@@ -91,8 +91,8 @@
 
                   <div class="search-box-footer">
                     <div class="day-btn">
-                      <button  @click="goBack">
-                        <a href="#">Back</a>
+                      <button>
+                        <a href="/calendar">Back</a>
                       </button>
                     </div>
                   </div>
@@ -148,10 +148,6 @@ export default {
     this.selectedDate = dayDate;
   },
   methods: {
-    goBack() {
-      // 1ステップ前に遷移する
-      this.$router.go(-1);
-    },
     someMethod() {
       // メソッド内で hasVisitDate を使用する場合
       this.hasVisitDate();

@@ -10302,22 +10302,7 @@ input.text, input.email, input.password {
 	margin-top: -15px;
   }
 
-<<<<<<< HEAD
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 80%;
-    background-color: rgba(0, 0, 0, 0.7);
-    /* 半透明の背景色 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .modal-content {
-=======
+
   /* モーダルウィンドウ */
 .modal {
 	position: fixed;
@@ -10333,12 +10318,10 @@ input.text, input.email, input.password {
 }
   
 .modal-content {
->>>>>>> origin/develop1
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-<<<<<<< HEAD
   }
 
 /*---------------------------------------------------------------------------------------------------------
@@ -10366,10 +10349,6 @@ input.text, input.email, input.password {
 	padding: 10px;
 	font-size: 16px;
 	font-weight: 700;
-}
-=======
-	margin: auto;
-	width: 60%;
 }
 
 .detailed-title {
@@ -10429,4 +10408,3 @@ input.text, input.email, input.password {
 	max-height: 300px;
 	overflow-y: auto;
 }
->>>>>>> origin/develop1
